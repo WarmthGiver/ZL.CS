@@ -56,7 +56,7 @@ namespace ZL.CS.SNAKE
 
             #region Canvas
 
-            canvas = new Canvas(new(new(0, 0), size));
+            canvas = new Canvas(size);
             canvases[0] = canvas;
 
             #endregion
@@ -90,7 +90,7 @@ namespace ZL.CS.SNAKE
             sceneObjects.Add(sceneObject);
 
             text = new(sceneObject);
-            text.graphic = new(new int[1, 9] {{15,15,15,15,15,15,15,15,15}}, "  START  ");
+            text.graphic = new(new byte[1, 9] {{15,15,15,15,15,15,15,15,15}}, "  START  ");
             sceneObject.AddComponent(text);
 
             button = new(sceneObject);
@@ -105,7 +105,7 @@ namespace ZL.CS.SNAKE
             sceneObjects.Add(sceneObject);
 
             text = new(sceneObject);
-            text.graphic = new(new int[1, 9] {{15,15,15,15,15,15,15,15,15}}, "  SCORE  ");
+            text.graphic = new(new byte[1, 9] {{15,15,15,15,15,15,15,15,15}}, "  SCORE  ");
             sceneObject.AddComponent(text);
 
             button = new(sceneObject);

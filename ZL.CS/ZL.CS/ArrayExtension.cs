@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace ZL.CS
 {
@@ -17,9 +16,9 @@ namespace ZL.CS
 
         public static void Fill<T>(this T[,] instance, T value)
         {
-            for (int y = instance.GetLength(0); --y > 0;)
+            for (int y = instance.GetLength(0); --y >= 0;)
             {
-                for (int x = instance.GetLength(1); --x > 0;)
+                for (int x = instance.GetLength(1); --x >= 0;)
                 {
                     instance[y, x] = value;
                 }
@@ -28,7 +27,7 @@ namespace ZL.CS
 
         public static Size GetSize<T>(this T[,] instance)
         {
-            return new(instance.GetLength(0), instance.GetLength(1));
+            return new(instance.GetLength(1), instance.GetLength(0));
         }
     }
 }

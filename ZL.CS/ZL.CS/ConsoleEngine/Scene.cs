@@ -42,7 +42,7 @@ namespace ZL.CS.ConsoleEngine
 
                 foreach (var canvas in canvases)
                 {
-                    canvas.Show();
+                    canvas.Draw();
                 }
                 
                 yield return null;

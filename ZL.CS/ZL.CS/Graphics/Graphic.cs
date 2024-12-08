@@ -7,19 +7,18 @@ namespace ZL.CS.Graphics
         public readonly Size size;
         public readonly Point pivot;
 
-        public readonly int[,]? colorMap = null;
+        public readonly byte[,]? colorMap = null;
 
-        protected Graphic(int[,] colorMap) : this(colorMap.GetSize())
+        protected Graphic(byte[,] colorMap) : this(colorMap.GetSize())
         {
             this.colorMap = colorMap;
         }
-
         protected Graphic(Size size)
         {
             this.size = size;
             pivot = size.GetPivot();
         }
 
-        public abstract void Draw(Canvas canvas, Point point, sbyte depth);
+        public abstract void Draw(Canvas canvas, Point point, byte depth);
     }
 }

@@ -4,21 +4,22 @@ namespace ZL.CS.Graphics
 {
     public sealed class Foreground : Graphic
     {
+        public const byte defaultColor = 15;
+
         public readonly string[] textMap;
 
-        public Foreground(int[,] colorMap, params string[] textMap) : base(colorMap)
+        public Foreground(byte[,] colorMap, params string[] textMap) : base(colorMap)
         {
             this.textMap = textMap;
         }
-
         public Foreground(params string[] textMap) : base(textMap.GetSize())
         {
             this.textMap = textMap;
         }
 
-        public override void Draw(Canvas canvas, Point point, sbyte depth)
+        public override void Draw(Canvas canvas, Point point, byte depth)
         {
-            canvas.Draw(this, point, depth);
+            canvas.DrawRequest(this, point, depth);
         }
     }
 }

@@ -18,7 +18,6 @@ namespace ZL.CS
         {
             return instance[key.ToString()];
         }
-
         public static TValue Get<TValue>(this Dictionary<string, TValue> instance, string key)
         {
             return instance[key];

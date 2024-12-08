@@ -12,14 +12,14 @@ namespace ZL.CS.ConsoleEngine
         public readonly Canvas canvas;
 
         public Point position;
-        public sbyte depth;
+        public byte depth;
 
         private List<Component> components = new();
 
         private SceneObject? parnet = null;
         private List<SceneObject> children = new();
 
-        public SceneObject(string name, Canvas canvas, Point position, sbyte depth)
+        public SceneObject(string name, Canvas canvas, Point position, byte depth)
         {
             this.name = name;
 
