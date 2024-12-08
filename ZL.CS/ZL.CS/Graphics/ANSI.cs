@@ -7,6 +7,7 @@ namespace ZL.CS.Graphics
         public static void ColorPalette()
         {
             Console.WriteLine();
+
             for (short i = 0; i < 16;)
             {
                 for (short j = 0; j < 8; ++i, ++j)
@@ -16,6 +17,7 @@ namespace ZL.CS.Graphics
                 Console.WriteLine("\x1b[0m");
             }
             Console.WriteLine();
+
             for (short i = 16; i < 232;)
             {
                 for (short j = 0; j < 6; ++i, ++j)
@@ -25,6 +27,7 @@ namespace ZL.CS.Graphics
                 Console.WriteLine("\x1b[0m");
             }
             Console.WriteLine();
+
             for (short i = 232; i < 256;)
             {
                 for (short j = 0; j < 6; ++i, ++j)

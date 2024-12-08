@@ -14,6 +14,11 @@ namespace ZL.CS
             instance[point.Y, point.X] = value;
         }
 
+        public static Size GetSize<T>(this T[,] instance)
+        {
+            return new(instance.GetLength(1), instance.GetLength(0));
+        }
+
         public static void Fill<T>(this T[,] instance, T value)
         {
             for (int y = instance.GetLength(0); --y >= 0;)
@@ -23,11 +28,6 @@ namespace ZL.CS
                     instance[y, x] = value;
                 }
             }
-        }
-
-        public static Size GetSize<T>(this T[,] instance)
-        {
-            return new(instance.GetLength(1), instance.GetLength(0));
         }
     }
 }

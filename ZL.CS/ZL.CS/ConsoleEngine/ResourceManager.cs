@@ -15,7 +15,6 @@ namespace ZL.CS.Graphics
         {
             backgrounds.Add(name, background);
         }
-
         public static void AddBackground(string name, Background background)
         {
             backgrounds.Add(name, background);
@@ -27,7 +26,6 @@ namespace ZL.CS.Graphics
         {
             return backgrounds.Get(name);
         }
-
         public static Background LoadBackground(string name)
         {
             return backgrounds.Get(name);
@@ -39,7 +37,6 @@ namespace ZL.CS.Graphics
         {
             foregrounds.Add(name, foreground);
         }
-
         public static void AddForeground(string name, Foreground foreground)
         {
             foregrounds.Add(name, foreground);
@@ -51,7 +48,6 @@ namespace ZL.CS.Graphics
         {
             return foregrounds.Get(name);
         }
-
         public static Foreground LoadForeground(string name)
         {
             return foregrounds.Get(name);

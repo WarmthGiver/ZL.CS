@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Threading;
 
 using ZL.CS.Graphics;
 
@@ -76,8 +75,6 @@ namespace ZL.CS.Demo
 
                         break;
                 }
-
-                //Thread.Sleep(16);
             }
         }
     }

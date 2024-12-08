@@ -9,8 +9,7 @@
 
         protected override void Update()
         {
-            //image?.Call();
-            //text?.Call();
+
         }
     }
 }

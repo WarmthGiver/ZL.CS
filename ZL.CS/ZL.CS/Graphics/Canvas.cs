@@ -9,6 +9,7 @@ namespace ZL.CS.Graphics
         public readonly Size size;
 
         private readonly byte maxDepth;
+
         private readonly byte[,] depthMap;
 
         private readonly byte[,] backgroundColorMap;
@@ -23,6 +24,7 @@ namespace ZL.CS.Graphics
             this.size = size;
 
             this.maxDepth = maxDepth;
+
             depthMap = new byte[size.Height, size.Width];
 
             backgroundColorMap = new byte[size.Height, size.Width];
