@@ -4,7 +4,7 @@ namespace ZL.CS.Graphics
 {
     public sealed class Foreground : Graphic
     {
-        public const byte defaultColor = 15;
+        public const byte defaultColor = 7;
 
         public readonly string[] textMap;
 

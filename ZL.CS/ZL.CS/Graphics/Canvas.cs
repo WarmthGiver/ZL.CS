@@ -1,5 +1,7 @@
 ﻿using System;
+
 using System.Drawing;
+
 using System.Text;
 
 namespace ZL.CS.Graphics
@@ -15,9 +17,12 @@ namespace ZL.CS.Graphics
         private readonly byte[,] backgroundColorMap;
 
         private readonly byte[,] foregroundColorMap;
+
         private readonly char[,] foregroundTextMap;
 
         private readonly StringBuilder stringBuilder = new();
+
+        private readonly ANSI.Builder ansiBuilder = new();
 
         public Canvas(Size size, byte maxDepth = byte.MaxValue)
         {
@@ -30,6 +35,7 @@ namespace ZL.CS.Graphics
             backgroundColorMap = new byte[size.Height, size.Width];
 
             foregroundColorMap = new byte[size.Height, size.Width];
+
             foregroundTextMap = new char[size.Height, size.Width];
 
             Clear();
@@ -42,6 +48,7 @@ namespace ZL.CS.Graphics
             backgroundColorMap.Fill(Background.defaultColor);
 
             foregroundColorMap.Fill(Foreground.defaultColor);
+
             foregroundTextMap.Fill(' ');
         }
 
@@ -50,6 +57,7 @@ namespace ZL.CS.Graphics
             point = point.Sub(graphic.pivot);
 
             Rectangle rect = new(new(0, 0), graphic.size);
+
             rect = rect.Culling(new(new(0, 0), size), point);
 
             Point startPoint = point;
@@ -67,6 +75,13 @@ namespace ZL.CS.Graphics
                         continue;
                     }
 
+                    if (graphic.colorMap[y, x] == 0)
+                    {
+                        continue;
+                    }
+
+                    depthMap.Set(point, depth);
+
                     backgroundColorMap.Set(point, graphic.colorMap[y, x]);
 
                     foregroundTextMap.Set(point, ' ');
@@ -78,11 +93,13 @@ namespace ZL.CS.Graphics
         public void DrawRequest(Foreground graphic, Point point, byte depth)
         {
             var colorMap = graphic.colorMap;
+
             var textMap = graphic.textMap;
 
             point = point.Sub(graphic.pivot);
 
             Rectangle rect = new(new(0, 0), graphic.size);
+
             rect = rect.Culling(new(new(0, 0), size), point);
 
             Point bufferPoint = point;
@@ -104,11 +121,13 @@ namespace ZL.CS.Graphics
                     {
                         foregroundColorMap.Set(bufferPoint, colorMap[y, x]);
                     }
+
                     foregroundTextMap.Set(bufferPoint, textMap[y][x]);
                 }
             }
         }
 
+        /*
         public void Draw()
         {
             for (int y = 0; ;)
@@ -116,9 +135,10 @@ namespace ZL.CS.Graphics
                 for (int x = 0; x < size.Width; ++x)
                 {
                     var bgColor = backgroundColorMap[y, x];
+
                     var fgColor = foregroundColorMap[y, x];
 
-                    stringBuilder.Append(ANSI.ColorText(bgColor, fgColor, foregroundTextMap[y, x]));
+                    stringBuilder.Append(ANSI.ColoredText(bgColor, fgColor, foregroundTextMap[y, x]));
                 }
 
                 if (++y >= size.Height)
@@ -130,8 +150,39 @@ namespace ZL.CS.Graphics
             }
 
             Console.SetCursorPosition(0, 0);
+
             Console.Write(stringBuilder.ToString());
+
             stringBuilder.Clear();
+        }
+        */
+
+        public void Draw()
+        {
+            for (int y = 0; ;)
+            {
+                for (int x = 0; x < size.Width; ++x)
+                {
+                    ansiBuilder.SetColor(backgroundColorMap[y, x], foregroundColorMap[y, x]);
+
+                    ansiBuilder.Append(foregroundTextMap[y, x]);
+                }
+
+                if (++y >= size.Height)
+                {
+                    break;
+                }
+
+                ansiBuilder.AppendLine();
+            }
+
+            ansiBuilder.ClearColor();
+
+            Console.SetCursorPosition(0, 0);
+
+            Console.Write(ansiBuilder.ToString());
+
+            ansiBuilder.Clear();
         }
     }
 }
