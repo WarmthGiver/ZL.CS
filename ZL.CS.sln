@@ -1,0 +1,34 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.12.35514.174
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZL.CS", "ZL.CS\ZL.CS.csproj", "{2435337F-2F5E-4A73-BD94-174AC3A8A4E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZL.CS.Demo.ANSIBuilder", "ZL.CS\Demo\ANSIBuilder\ZL.CS.Demo.ANSIBuilder.csproj", "{F9DD031B-C1D3-412C-BC1E-0E48E144D43B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZL.CS.Demo.Canvas", "ZL.CS\Demo\Canvas\ZL.CS.Demo.Canvas.csproj", "{0B6A36E8-A0EC-4408-81DA-FB3D0609E08F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{2435337F-2F5E-4A73-BD94-174AC3A8A4E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2435337F-2F5E-4A73-BD94-174AC3A8A4E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2435337F-2F5E-4A73-BD94-174AC3A8A4E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2435337F-2F5E-4A73-BD94-174AC3A8A4E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F9DD031B-C1D3-412C-BC1E-0E48E144D43B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9DD031B-C1D3-412C-BC1E-0E48E144D43B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9DD031B-C1D3-412C-BC1E-0E48E144D43B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9DD031B-C1D3-412C-BC1E-0E48E144D43B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B6A36E8-A0EC-4408-81DA-FB3D0609E08F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B6A36E8-A0EC-4408-81DA-FB3D0609E08F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B6A36E8-A0EC-4408-81DA-FB3D0609E08F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B6A36E8-A0EC-4408-81DA-FB3D0609E08F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
