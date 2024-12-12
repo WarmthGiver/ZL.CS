@@ -13,9 +13,9 @@ namespace ZL.CS.ConsoleEngine.UI
             this.graphic = graphic;
         }
 
-        protected override void Update()
+        protected override void FixedUpdate()
         {
-            graphic?.Draw(sceneObject.canvas, sceneObject.transform.Position);
+            graphic?.Draw(sceneObject.Transform.Position);
         }
     }
 }

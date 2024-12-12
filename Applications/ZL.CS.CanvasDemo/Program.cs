@@ -2,6 +2,8 @@
 
 using System.Drawing;
 
+using ZL.CS.ConsoleEngine;
+
 using ZL.CS.Graphics;
 
 namespace ZL.CS.CanvasDemo
@@ -16,7 +18,11 @@ namespace ZL.CS.CanvasDemo
 
             Fixed.Console.SetWindowSize(size);
 
-            Canvas canvas = new(size, new Point(33, 16));
+            SceneObject player = new("Player");
+
+            Camera.main = new(player, size);
+
+            player.AddComponent(Camera.main);
 
             Background background1 = new(new byte[7, 14]
             {
@@ -64,41 +70,43 @@ namespace ZL.CS.CanvasDemo
                 {201,201,000,000,201,201,000,000,201,201,000,000,201,201},
             });
 
-            Position position = new(-2, -1, 0);
+            Position position = new(1, 0, 0);
 
             while (true)
             {
-                canvas.Clear();
+                player.Transform.Position = position;
 
-                canvas.DrawRequest(background1, position);
+                Camera.main.Clear();
 
-                canvas.DrawRequest(background2, new(0, 0, 1));
+                Camera.main.DrawRequest(background1, new(-2, -1, 0));
 
-                canvas.Draw();
+                Camera.main.DrawRequest(background2, new(0, 0, 1));
+
+                Camera.main.Draw();
 
                 switch (Console.ReadKey(false).Key)
                 {
                     case ConsoleKey.UpArrow:
 
-                        position.Y -= 1;
+                        position.location.Y -= 1;
 
                         break;
 
                     case ConsoleKey.DownArrow:
 
-                        position.Y += 1;
+                        position.location.Y += 1;
 
                         break;
 
                     case ConsoleKey.LeftArrow:
 
-                        position.X -= 2;
+                        position.location.X -= 2;
 
                         break;
 
                     case ConsoleKey.RightArrow:
 
-                        position.X += 2;
+                        position.location.X += 2;
 
                         break;
                 }

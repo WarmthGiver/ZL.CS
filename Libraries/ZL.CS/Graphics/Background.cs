@@ -1,6 +1,4 @@
-﻿using System.Drawing;
-
-namespace ZL.CS.Graphics
+﻿namespace ZL.CS.Graphics
 {
     public sealed class Background : Graphic
     {
@@ -8,9 +6,9 @@ namespace ZL.CS.Graphics
 
         public Background(byte[,] colorMap) : base(colorMap) { }
 
-        public override void Draw(Canvas canvas, Point point, byte depth)
+        public override void Draw(Position position)
         {
-            canvas.DrawRequest(this, point, depth);
+            Camera.main?.DrawRequest(this, position);
         }
     }
 }

@@ -4,9 +4,9 @@ namespace ZL.CS
 {
     public struct Position
     {
-        public Point Location { get; set; }
+        public Point location;
 
-        public int Depth { get; set; }
+        public int depth;
 
         public Position() : this(new(0, 0), 0) { }
 
@@ -14,19 +14,19 @@ namespace ZL.CS
 
         public Position(Point location, int depth)
         {
-            Location = location;
+            this.location = location;
 
-            Depth = depth;
+            this.depth = depth;
         }
 
         public static Position operator +(Position left, Position right)
         {
-            return new(left.Location.Add(right.Location), left.Depth + right.Depth);
+            return new(left.location.Add(right.location), left.depth + right.depth);
         }
 
         public static Position operator -(Position left, Position right)
         {
-            return new(left.Location.Sub(right.Location), left.Depth - right.Depth);
+            return new(left.location.Sub(right.location), left.depth - right.depth);
         }
     }
 }

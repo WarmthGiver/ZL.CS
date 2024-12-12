@@ -2,7 +2,7 @@
 {
     public abstract class Component : Object
     {
-        protected SceneObject sceneObject;
+        public readonly SceneObject sceneObject;
 
         protected Component(SceneObject sceneObject)
         {

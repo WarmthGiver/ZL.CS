@@ -34,9 +34,7 @@ namespace ZL.CS.ConsoleEngine
 
         //protected readonly Point pivot;
 
-        protected readonly Canvas mainCanvas;
-
-        protected readonly List<Canvas> subCanvases = new();
+        protected readonly List<Camera> subCanvases = new();
 
         private readonly List<SceneObject> sceneObjects = new();
 
@@ -52,21 +50,16 @@ namespace ZL.CS.ConsoleEngine
 
             //pivot = size.GetPivot();
 
-            mainCanvas = new Canvas(rect);
+            var sceneObject = CreateSceneObject("Main Camera");
+
+            Camera.main = new Camera(sceneObject, consoleSize);
+
+            sceneObject.AddComponent(Camera.main);
         }
 
-        protected Canvas CreateCanvas()
+        protected SceneObject CreateSceneObject(string name)
         {
-            Canvas canvas = new(consoleSize);
-
-            subCanvases.Add(canvas);
-
-            return canvas;
-        }
-
-        protected SceneObject CreateSceneObject(string name, Canvas canvas)
-        {
-            SceneObject sceneObject = new(name, canvas);
+            SceneObject sceneObject = new(name);
 
             sceneObjects.Add(sceneObject);
 
@@ -128,7 +121,7 @@ namespace ZL.CS.ConsoleEngine
                     subCanvas.Draw();
                 }
 
-                mainCanvas.Draw();
+                Camera.main?.Draw();
 
                 await Task.Delay(threadDelay);
             }

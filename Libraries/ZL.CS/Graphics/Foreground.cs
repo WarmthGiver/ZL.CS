@@ -1,7 +1,5 @@
 ﻿using System;
 
-using System.Drawing;
-
 namespace ZL.CS.Graphics
 {
     public sealed class Foreground : Graphic
@@ -20,9 +18,9 @@ namespace ZL.CS.Graphics
             this.textMap = textMap.ToChar();
         }
 
-        public override void Draw(Canvas canvas, Position position)
+        public override void Draw(Position position)
         {
-            canvas.DrawRequest(this, position);
+            Camera.main?.DrawRequest(this, position);
         }
     }
 }

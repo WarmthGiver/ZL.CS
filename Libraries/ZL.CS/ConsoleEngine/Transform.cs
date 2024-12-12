@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace ZL.CS.ConsoleEngine
 {
-    public sealed class Transform
+    public class Transform : Component
     {
         private Position position;
 
@@ -26,33 +26,31 @@ namespace ZL.CS.ConsoleEngine
 
         public Point Location
         {
-            get => position.Location;
+            get => position.location;
 
-            set => Move(value.Direction(position.Location));
+            set => Move(value.Direction(position.location));
         }
 
         public Point LocalLocation
         {
-            get => localPosition.Location;
+            get => localPosition.location;
 
-            set => Move(value.Direction(localPosition.Location));
+            set => Move(value.Direction(localPosition.location));
         }
 
         public int Depth
         {
-            get => position.Depth;
+            get => position.depth;
 
-            set => Move(value - position.Depth);
+            set => Move(value - position.depth);
         }
 
         public int LocalDepth
         {
-            get => localPosition.Depth;
+            get => localPosition.depth;
 
-            set => Move(value - localPosition.Depth);
+            set => Move(value - localPosition.depth);
         }
-
-        public readonly SceneObject sceneObject;
 
         private Transform? parent = null;
 
@@ -80,12 +78,9 @@ namespace ZL.CS.ConsoleEngine
 
         private readonly LinkedList<Transform> children = new();
 
-        internal Transform(SceneObject sceneObject)
-        {
-            this.sceneObject = sceneObject;
-        }
+        internal Transform(SceneObject sceneObject) : base(sceneObject) { }
 
-        public void Move(Position position)
+        public virtual void Move(Position position)
         {
             this.position += position;
 
@@ -95,11 +90,11 @@ namespace ZL.CS.ConsoleEngine
             }
         }
 
-        public void Move(Size direction)
+        public virtual void Move(Size direction)
         {
-            position.Location += direction;
+            position.location += direction;
 
-            localPosition.Location += direction;
+            localPosition.location += direction;
 
             foreach (var child in children)
             {
@@ -109,9 +104,9 @@ namespace ZL.CS.ConsoleEngine
 
         public void Move(int depth)
         {
-            position.Depth += depth;
+            position.depth += depth;
 
-            localPosition.Depth += depth;
+            localPosition.depth += depth;
 
             foreach (var child in children)
             {

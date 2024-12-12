@@ -8,27 +8,26 @@ namespace ZL.CS.ConsoleEngine
     {
         public readonly string name;
 
-        public readonly Canvas canvas;
+        public RectTransform? RectTransform { get; private set; }
 
-        public readonly Transform transform;
+        public Transform Transform { get; private set; }
 
         private readonly List<Component> components = new();
 
-        public SceneObject(string name, Canvas canvas)
+        public SceneObject(string name)
         {
             this.name = name;
 
-            this.canvas = canvas;
-
-            transform = new(this);
+            Transform = new(this);
         }
 
-        protected override void Update()
+        internal RectTransform AddRectTransform()
         {
-            foreach (Component component in components)
-            {
-                component.TryUpdate();
-            }
+            RectTransform = new(Transform);
+
+            Transform = RectTransform;
+
+            return RectTransform;
         }
 
         public void AddComponents(params Component[] components)
@@ -42,6 +41,14 @@ namespace ZL.CS.ConsoleEngine
         public void AddComponent(Component component)
         {
             components.Add(component);
+        }
+
+        protected override void Update()
+        {
+            foreach (Component component in components)
+            {
+                component.TryUpdate();
+            }
         }
     }
 }

@@ -17,11 +17,6 @@ namespace ZL.CS
             return instance;
         }
 
-        public static Point GetPivot(this Rectangle instance)
-        {
-            return new Size(instance.Right, instance.Bottom).GetPivot();
-        }
-
         public static Rectangle Culling(this Rectangle instance, Rectangle rect, Point location)
         {
             if (location.X < rect.X)

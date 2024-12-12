@@ -6,7 +6,7 @@ namespace ZL.CS.Graphics
     {
         public readonly Rectangle rect;
 
-        public readonly Point pivot;
+        public readonly Size pivot;
 
         public readonly byte[,]? colorMap = null;
 
@@ -19,9 +19,9 @@ namespace ZL.CS.Graphics
         {
             rect = new Rectangle(new Point(0, 0), size);
 
-            pivot = size.GetPivot();
+            pivot = size.GetHalf();
         }
 
-        public abstract void Draw(Canvas canvas, Position position);
+        public abstract void Draw(Position position);
     }
 }

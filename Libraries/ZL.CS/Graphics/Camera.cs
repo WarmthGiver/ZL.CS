@@ -2,39 +2,40 @@
 
 using System.Drawing;
 
+using ZL.CS.ConsoleEngine;
+
 namespace ZL.CS.Graphics
 {
-    public sealed class Canvas
+    public sealed class Camera : Component
     {
-        private readonly Rectangle rect;
+        public static Camera? main { get; set; } = null;
 
-        private readonly Point pivot;
+        private readonly RectTransform rectTransform;
 
-        public byte maxDepth;
+        public int Depth { get; set; } = int.MaxValue;
 
-        private readonly int[,] depthMap;
+        private int[,] depthMap;
 
-        private readonly byte[,] backgroundColorMap;
+        private byte[,] backgroundColorMap;
 
-        private readonly byte[,] foregroundColorMap;
+        private byte[,] foregroundColorMap;
 
-        private readonly char[,] foregroundTextMap;
+        private char[,] foregroundTextMap;
 
         private readonly ANSI.BufferBuilder bufferBuilder = new();
 
-        public Canvas(Size size, byte maxDepth = byte.MaxValue) : this(size.ToRect(), maxDepth) { }
-
-        public Canvas(Size size, Point pivot, byte maxDepth = byte.MaxValue) : this(size.ToRect(), pivot, maxDepth) { }
-
-        public Canvas(Rectangle rect, byte maxDepth = byte.MaxValue) : this(rect, rect.GetPivot(), maxDepth) { }
-
-        public Canvas(Rectangle rect, Point pivot, byte maxDepth = byte.MaxValue)
+        public Camera(SceneObject sceneObject, Size size) : base(sceneObject)
         {
-            this.rect = rect;
+            rectTransform = sceneObject.AddRectTransform();
 
-            this.pivot = pivot;
+            Resize(size);
+        }
 
-            this.maxDepth = maxDepth;
+        public void Resize(Size size)
+        {
+            rectTransform.Size = size;
+
+            var rect = rectTransform.Rect;
 
             depthMap = new int[rect.Height, rect.Width];
 
@@ -49,7 +50,7 @@ namespace ZL.CS.Graphics
 
         public void Clear()
         {
-            depthMap.Fill(maxDepth);
+            depthMap.Fill(Depth);
 
             backgroundColorMap.Fill(Background.defaultColor);
 
@@ -65,23 +66,23 @@ namespace ZL.CS.Graphics
                 return;
             }
 
-            position.Location = position.Location.Add(pivot);
+            position.location += rectTransform.Pivot;
 
-            position.Location = position.Location.Sub(graphic.pivot);
+            position.location -= graphic.pivot;
 
-            Rectangle graphicRect = graphic.rect.Culling(rect, position.Location);
+            Rectangle graphicRect = graphic.rect.Culling(rectTransform.Rect, position.location);
 
             Point point = new();
 
             for (int y = graphicRect.Y; y < graphicRect.Height; ++y)
             {
-                point.Y = position.Location.Y + y;
+                point.Y = position.location.Y + y;
 
                 for (int x = graphicRect.X; x < graphicRect.Width; ++x)
                 {
-                    point.X = position.Location.X + x;
+                    point.X = position.location.X + x;
 
-                    if (depthMap.Get(point) < position.Depth)
+                    if (depthMap.Get(point) < position.depth)
                     {
                         continue;
                     }
@@ -91,7 +92,7 @@ namespace ZL.CS.Graphics
                         continue;
                     }
 
-                    depthMap.Set(point, position.Depth);
+                    depthMap.Set(point, position.depth);
 
                     backgroundColorMap.Set(point, graphic.colorMap[y, x]);
 
@@ -102,26 +103,28 @@ namespace ZL.CS.Graphics
 
         public void DrawRequest(Foreground graphic, Position position)
         {
-            position.Location = position.Location.Sub(graphic.pivot);
+            position.location += rectTransform.Pivot;
 
-            Rectangle graphicRect = graphic.rect.Culling(rect, position.Location);
+            position.location -= graphic.pivot;
+
+            Rectangle graphicRect = graphic.rect.Culling(rectTransform.Rect, position.location);
 
             Point point = new();
 
             for (int y = graphicRect.Y; y < graphicRect.Height; ++y)
             {
-                point.Y = position.Location.Y + y;
+                point.Y = position.location.Y + y;
 
                 for (int x = graphicRect.X; x < graphicRect.Width; ++x)
                 {
-                    point.X = position.Location.X + x;
+                    point.X = position.location.X + x;
 
-                    if (depthMap.Get(point) < position.Depth)
+                    if (depthMap.Get(point) < position.depth)
                     {
                         continue;
                     }
 
-                    depthMap.Set(point, position.Depth);
+                    depthMap.Set(point, position.depth);
 
                     if (graphic.colorMap != null)
                     {
@@ -133,23 +136,18 @@ namespace ZL.CS.Graphics
             }
         }
 
-        public void Merge(params Canvas[] canvases)
-        {
-
-        }
-
         public void Draw()
         {
             for (int y = 0; ;)
             {
-                for (int x = 0; x < rect.Width; ++x)
+                for (int x = 0; x < rectTransform.Rect.Width; ++x)
                 {
                     bufferBuilder.SetColor(backgroundColorMap[y, x], foregroundColorMap[y, x]);
 
                     bufferBuilder.Append(foregroundTextMap[y, x]);
                 }
 
-                if (++y >= rect.Height)
+                if (++y >= rectTransform.Rect.Height)
                 {
                     break;
                 }
