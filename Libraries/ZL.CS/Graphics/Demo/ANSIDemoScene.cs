@@ -12,7 +12,7 @@ namespace ZL.CS.Graphics.Demo
     {
         ANSI.BufferBuilder builder = new();
 
-        public ANSIDemoScene(int framesRate, Size consoleSize, int subCanvasesCount) : base(framesRate, consoleSize, subCanvasesCount)
+        public ANSIDemoScene(int framesRate, Size consoleSize) : base(framesRate, consoleSize)
         {
             builder.SetColor(196, 046);
 

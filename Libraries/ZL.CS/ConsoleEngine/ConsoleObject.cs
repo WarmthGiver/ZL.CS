@@ -1,10 +1,8 @@
 ﻿using System.Collections.Generic;
 
-using ZL.CS.Graphics;
-
 namespace ZL.CS.ConsoleEngine
 {
-    public sealed class SceneObject : Object
+    public sealed class ConsoleObject : Object
     {
         public readonly string name;
 
@@ -14,31 +12,39 @@ namespace ZL.CS.ConsoleEngine
 
         private readonly List<Component> components = new();
 
-        public SceneObject(string name)
+        public ConsoleObject(string name)
         {
             this.name = name;
 
-            Transform = new(this);
+            Transform = new();
         }
 
-        internal RectTransform AddRectTransform()
+        public RectTransform AddRectTransform()
         {
-            RectTransform = new(Transform);
+            if (RectTransform == null)
+            {
+                RectTransform = Component.Instantiate<RectTransform>(this);
 
-            Transform = RectTransform;
+                RectTransform.Set(Transform);
+
+                Transform = RectTransform;
+            }
 
             return RectTransform;
         }
 
-        public void AddComponents(params Component[] components)
+        public T Add<T>()
+
+            where T : Component, new()
         {
-            foreach (var component in components)
-            {
-                AddComponent(component);
-            }
+            var component = Component.Instantiate<T>(this);
+
+            Add(component);
+
+            return component;
         }
 
-        public void AddComponent(Component component)
+        public void Add(Component component)
         {
             components.Add(component);
         }

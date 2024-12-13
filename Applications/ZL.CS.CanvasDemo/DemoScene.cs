@@ -10,7 +10,7 @@ namespace ZL.CS.CanvasDemo
 {
     internal sealed class DemoScene : Scene
     {
-        public DemoScene(int framesRate, Size consoleSize, int subCanvasesCount) : base(framesRate, consoleSize, subCanvasesCount)
+        public DemoScene(int framesRate, Size size) : base(framesRate, size)
         {
 
         }

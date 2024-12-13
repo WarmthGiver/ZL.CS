@@ -8,8 +8,6 @@ namespace ZL.CS.ConsoleEngine.UI
 
         protected State state = State.Enabled;
 
-        protected Selectable(SceneObject ConsoleObject) : base(ConsoleObject) { }
-
         public void Select(bool value)
         {
             if (value == true)

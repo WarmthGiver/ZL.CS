@@ -28,47 +28,48 @@ namespace ZL.CS.ConsoleEngine
 
         private TimeSpan threadDelay;
 
-        protected readonly Size consoleSize;
+        protected readonly Size size;
 
-        protected readonly Rectangle rect;
+        protected readonly List<Camera> cameras = new();
 
-        //protected readonly Point pivot;
+        private readonly List<ConsoleObject> consoleObjects = new();
 
-        protected readonly List<Camera> subCanvases = new();
-
-        private readonly List<SceneObject> sceneObjects = new();
-
-        protected Scene(int framesRate, Size consoleSize, int subCanvasesCount) : this(framesRate, consoleSize, new Rectangle(new(0, 0), consoleSize)) { }
-
-        protected Scene(int framesRate, Size consoleSize, Rectangle rect)
+        protected Scene(int framesRate, Size size)
         {
             FrameRate = framesRate;
 
-            this.consoleSize = consoleSize;
+            this.size = size;
 
-            this.rect = rect;
+            var consoleObject = CreateConsoleObject("Main Camera");
 
-            //pivot = size.GetPivot();
+            var camera = consoleObject.Add<Camera>();
 
-            var sceneObject = CreateSceneObject("Main Camera");
-
-            Camera.main = new Camera(sceneObject, consoleSize);
-
-            sceneObject.AddComponent(Camera.main);
+            camera.Size = size;
         }
 
-        protected SceneObject CreateSceneObject(string name)
+        protected Camera CreateCamera(string name, Size size)
         {
-            SceneObject sceneObject = new(name);
+            var consoleObject = CreateConsoleObject(name);
 
-            sceneObjects.Add(sceneObject);
+            var camera = consoleObject.Add<Camera>();
 
-            return sceneObject;
+            camera.Size = size;
+
+            return camera;
+        }
+
+        protected ConsoleObject CreateConsoleObject(string name)
+        {
+            ConsoleObject consoleObject = new(name);
+
+            consoleObjects.Add(consoleObject);
+
+            return consoleObject;
         }
 
         public virtual void Start()
         {
-            Fixed.Console.SetWindowSize(consoleSize);
+            Fixed.Console.SetWindowSize(size);
 
             fixedUpdate = Task.Run(FixedUpdate);
 
@@ -88,9 +89,9 @@ namespace ZL.CS.ConsoleEngine
         {
             while (true)
             {
-                foreach (var sceneObject in sceneObjects)
+                foreach (var consoleObject in consoleObjects)
                 {
-                    sceneObject.TryFixedUpdate();
+                    consoleObject.TryFixedUpdate();
                 }
 
                 await Task.Delay(threadDelay);
@@ -103,9 +104,9 @@ namespace ZL.CS.ConsoleEngine
         {
             while (true)
             {
-                foreach (var sceneObject in sceneObjects)
+                foreach (var consoleObject in consoleObjects)
                 {
-                    sceneObject.TryUpdate();
+                    consoleObject.TryUpdate();
                 }
             }
         }
@@ -116,12 +117,12 @@ namespace ZL.CS.ConsoleEngine
         {
             while (true)
             {
-                foreach (var subCanvas in subCanvases)
+                foreach (var subCanvas in cameras)
                 {
-                    subCanvas.Draw();
+                    subCanvas.Render();
                 }
 
-                Camera.main?.Draw();
+                Camera.main?.Render();
 
                 await Task.Delay(threadDelay);
             }

@@ -8,11 +8,35 @@ namespace ZL.CS.Graphics
 {
     public sealed class Camera : Component
     {
-        public static Camera? main { get; set; } = null;
+        public static Camera? main { get; private set; } = null;
 
-        private readonly RectTransform rectTransform;
+        private Size size;
 
-        public int Depth { get; set; } = int.MaxValue;
+        public Size Size
+        {
+            get => size;
+
+            set
+            {
+                size = value;
+
+                pivot = size.GetHalf();
+
+                depthMap = new int[size.Height, size.Width];
+
+                backgroundColorMap = new byte[size.Height, size.Width];
+
+                foregroundColorMap = new byte[size.Height, size.Width];
+
+                foregroundTextMap = new char[size.Height, size.Width];
+
+                Clear();
+            }
+        }
+
+        private Size pivot;
+
+        public int maxDepth { get; set; } = int.MaxValue;
 
         private int[,] depthMap;
 
@@ -24,33 +48,9 @@ namespace ZL.CS.Graphics
 
         private readonly ANSI.BufferBuilder bufferBuilder = new();
 
-        public Camera(SceneObject sceneObject, Size size) : base(sceneObject)
-        {
-            rectTransform = sceneObject.AddRectTransform();
-
-            Resize(size);
-        }
-
-        public void Resize(Size size)
-        {
-            rectTransform.Size = size;
-
-            var rect = rectTransform.Rect;
-
-            depthMap = new int[rect.Height, rect.Width];
-
-            backgroundColorMap = new byte[rect.Height, rect.Width];
-
-            foregroundColorMap = new byte[rect.Height, rect.Width];
-
-            foregroundTextMap = new char[rect.Height, rect.Width];
-
-            Clear();
-        }
-
         public void Clear()
         {
-            depthMap.Fill(Depth);
+            depthMap.Fill(maxDepth);
 
             backgroundColorMap.Fill(Background.defaultColor);
 
@@ -59,30 +59,39 @@ namespace ZL.CS.Graphics
             foregroundTextMap.Fill(' ');
         }
 
-        public void DrawRequest(Background graphic, Position position)
+        public void SetMain()
+        {
+            main = this;
+        }
+
+        public void DrawCall(Background graphic, Position position)
         {
             if (graphic.colorMap == null)
             {
                 return;
             }
 
-            position.location += rectTransform.Pivot;
+            Point cameraLocation = consoleObject.Transform.Location - pivot;
 
-            position.location -= graphic.pivot;
+            Rectangle cameraView = new(cameraLocation, size);
 
-            Rectangle graphicRect = graphic.rect.Culling(rectTransform.Rect, position.location);
+            Point graphicLocation = position.location - graphic.pivot;
 
-            Point point = new();
+            Rectangle graphicRect = graphic.GetRect(graphicLocation, cameraView);
+
+            Point mapPoint = new();
+
+            Point mapLocation = graphicLocation.Sub(cameraLocation);
 
             for (int y = graphicRect.Y; y < graphicRect.Height; ++y)
             {
-                point.Y = position.location.Y + y;
+                mapPoint.Y = mapLocation.Y + y;
 
                 for (int x = graphicRect.X; x < graphicRect.Width; ++x)
                 {
-                    point.X = position.location.X + x;
+                    mapPoint.X = mapLocation.X + x;
 
-                    if (depthMap.Get(point) < position.depth)
+                    if (depthMap.Get(mapPoint) < position.depth)
                     {
                         continue;
                     }
@@ -92,62 +101,62 @@ namespace ZL.CS.Graphics
                         continue;
                     }
 
-                    depthMap.Set(point, position.depth);
+                    depthMap.Set(mapPoint, position.depth);
 
-                    backgroundColorMap.Set(point, graphic.colorMap[y, x]);
+                    backgroundColorMap.Set(mapPoint, graphic.colorMap[y, x]);
 
-                    foregroundTextMap.Set(point, ' ');
+                    foregroundTextMap.Set(mapPoint, ' ');
                 }
             }
         }
 
-        public void DrawRequest(Foreground graphic, Position position)
+        public void DrawCall(Foreground graphic, Position position)
         {
-            position.location += rectTransform.Pivot;
-
             position.location -= graphic.pivot;
 
-            Rectangle graphicRect = graphic.rect.Culling(rectTransform.Rect, position.location);
+            Rectangle cameraView = new(consoleObject.Transform.Location - pivot, size);
 
-            Point point = new();
+            Rectangle graphicRect = graphic.GetRect(position.location, cameraView);
+
+            Point mapPoint = new();
 
             for (int y = graphicRect.Y; y < graphicRect.Height; ++y)
             {
-                point.Y = position.location.Y + y;
+                mapPoint.Y = position.location.Y + y;
 
                 for (int x = graphicRect.X; x < graphicRect.Width; ++x)
                 {
-                    point.X = position.location.X + x;
+                    mapPoint.X = position.location.X + x;
 
-                    if (depthMap.Get(point) < position.depth)
+                    if (depthMap.Get(mapPoint) < position.depth)
                     {
                         continue;
                     }
 
-                    depthMap.Set(point, position.depth);
+                    depthMap.Set(mapPoint, position.depth);
 
                     if (graphic.colorMap != null)
                     {
-                        foregroundColorMap.Set(point, graphic.colorMap[y, x]);
+                        foregroundColorMap.Set(mapPoint, graphic.colorMap[y, x]);
                     }
 
-                    foregroundTextMap.Set(point, graphic.textMap[y, x]);
+                    foregroundTextMap.Set(mapPoint, graphic.textMap[y, x]);
                 }
             }
         }
 
-        public void Draw()
+        public void Render()
         {
             for (int y = 0; ;)
             {
-                for (int x = 0; x < rectTransform.Rect.Width; ++x)
+                for (int x = 0; x < size.Width; ++x)
                 {
                     bufferBuilder.SetColor(backgroundColorMap[y, x], foregroundColorMap[y, x]);
 
                     bufferBuilder.Append(foregroundTextMap[y, x]);
                 }
 
-                if (++y >= rectTransform.Rect.Height)
+                if (++y >= size.Height)
                 {
                     break;
                 }

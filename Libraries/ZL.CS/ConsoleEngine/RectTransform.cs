@@ -16,18 +16,13 @@ namespace ZL.CS.ConsoleEngine
             {
                 Pivot = value.GetHalf();
 
-                rect.Location = sceneObject.Transform.Location - Pivot;
+                rect.Location = consoleObject.Transform.Location - Pivot;
 
                 rect.Size = value;
             }
         }
 
         public Size Pivot { get; private set; }
-
-        public RectTransform(Transform transform) : base(transform.sceneObject)
-        {
-            Position = transform.Position;
-        }
 
         public override void Move(Position position)
         {

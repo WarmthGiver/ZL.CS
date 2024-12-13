@@ -78,11 +78,16 @@ namespace ZL.CS.ConsoleEngine
 
         private readonly LinkedList<Transform> children = new();
 
-        internal Transform(SceneObject sceneObject) : base(sceneObject) { }
+        public void Set(Transform transform)
+        {
+            Position = transform.Position;
+        }
 
         public virtual void Move(Position position)
         {
             this.position += position;
+
+            localPosition += position;
 
             foreach (var child in children)
             {

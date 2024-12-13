@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.12.35506.116 d17.12
+VisualStudioVersion = 17.12.35506.116
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{6F878848-B32E-4CB5-A626-1D3A37BB26B6}"
 EndProject
@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Applications", "Application
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZL.CS", "Libraries\ZL.CS\ZL.CS.csproj", "{A5F83F85-2AFA-4DB8-AE0F-35E5E1B037A4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZL.CS.CanvasDemo", "Applications\ZL.CS.CanvasDemo\ZL.CS.CanvasDemo.csproj", "{0AE8DE47-89AB-4998-9321-31AE2A470F1A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZL.CS.CameraDemo", "Applications\ZL.CS.CanvasDemo\ZL.CS.CameraDemo.csproj", "{0AE8DE47-89AB-4998-9321-31AE2A470F1A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ZL.CS.ANSIDemo", "Applications\ZL.CS.ANSIDemo\ZL.CS.ANSIDemo.csproj", "{9EAF7ADA-F03E-4BA9-B4F3-4EC7548AC331}"
 EndProject

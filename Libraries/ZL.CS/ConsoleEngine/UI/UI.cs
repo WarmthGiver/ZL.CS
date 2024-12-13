@@ -8,14 +8,9 @@ namespace ZL.CS.ConsoleEngine.UI
     {
         public TGraphic? graphic = null;
 
-        protected UI(SceneObject sceneObject, TGraphic? graphic) : base(sceneObject)
-        {
-            this.graphic = graphic;
-        }
-
         protected override void FixedUpdate()
         {
-            graphic?.Draw(sceneObject.Transform.Position);
+            graphic?.DrawCall(consoleObject.Transform.Position);
         }
     }
 }

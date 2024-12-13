@@ -2,11 +2,18 @@
 {
     public abstract class Component : Object
     {
-        public readonly SceneObject sceneObject;
+        public ConsoleObject consoleObject { get; private set; }
 
-        protected Component(SceneObject sceneObject)
+        internal static T Instantiate<T>(ConsoleObject consoleObject)
+            
+            where T : Component, new()
         {
-            this.sceneObject = sceneObject;
+            T component = new()
+            {
+                consoleObject = consoleObject
+            };
+
+            return component;
         }
     }
 }

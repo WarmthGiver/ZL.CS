@@ -6,8 +6,6 @@
 
         public Text? text = null;
 
-        public Button(SceneObject sceneObject) : base(sceneObject) { }
-
         protected override void Update()
         {
 

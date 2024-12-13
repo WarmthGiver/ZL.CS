@@ -18,9 +18,9 @@ namespace ZL.CS.Graphics
             this.textMap = textMap.ToChar();
         }
 
-        public override void Draw(Position position)
+        public override void DrawCall(Position position)
         {
-            Camera.main?.DrawRequest(this, position);
+            Camera.main?.DrawCall(this, position);
         }
     }
 }
