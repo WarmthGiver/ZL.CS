@@ -4,6 +4,18 @@ namespace ZL.CS.ConsoleEngine.UI
 {
     public abstract class Selectable : Component
     {
+        public override bool IsEnabled
+        {
+            get => isEnabled;
+
+            set
+            {
+                isEnabled = value;
+
+                UpdateState();
+            }
+        }
+
         public readonly Navigation navigation = new();
 
         protected State state = State.Enabled;
@@ -20,22 +32,15 @@ namespace ZL.CS.ConsoleEngine.UI
             UpdateState();
         }
 
-        public override void SetEnabled(bool value)
-        {
-            base.SetEnabled(value);
-
-            UpdateState();
-        }
-
         private void UpdateState()
         {
             if (Navigation.selected == this)
             {
-                state = isEnabled ? State.Enabled_Selected : State.Disabled_Selected;
+                state = IsEnabled ? State.Enabled_Selected : State.Disabled_Selected;
             }
             else
             {
-                state = isEnabled ? State.Enabled : State.Disabled;
+                state = IsEnabled ? State.Enabled : State.Disabled;
             }
         }
 

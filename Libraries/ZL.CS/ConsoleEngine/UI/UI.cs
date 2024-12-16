@@ -8,9 +8,9 @@ namespace ZL.CS.ConsoleEngine.UI
     {
         public TGraphic? graphic = null;
 
-        protected override void FixedUpdate()
+        public override void DrawCall()
         {
-            graphic?.DrawCall(consoleObject.Transform.Position);
+            graphic?.DrawCall(ConsoleObject.Transform.Position);
         }
     }
 }

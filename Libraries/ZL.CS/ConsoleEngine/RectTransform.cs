@@ -14,9 +14,9 @@ namespace ZL.CS.ConsoleEngine
 
             set
             {
-                Pivot = value.GetHalf();
+                Pivot = value.GetPivot();
 
-                rect.Location = consoleObject.Transform.Location - Pivot;
+                rect.Location = ConsoleObject.Transform.Location - Pivot;
 
                 rect.Size = value;
             }

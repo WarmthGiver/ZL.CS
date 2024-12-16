@@ -4,9 +4,11 @@ using System.Drawing;
 
 using ZL.CS.ConsoleEngine;
 
+using ZL.CS.ConsoleEngine.UI;
+
 using ZL.CS.Graphics;
 
-namespace ZL.CS.CanvasDemo
+namespace ZL.CS.CameraDemo
 {
     internal class Program
     {
@@ -14,15 +16,7 @@ namespace ZL.CS.CanvasDemo
         {
             Console.CursorVisible = false;
 
-            Size size = new(64, 32);
-
-            Fixed.Console.SetWindowSize(size);
-
-            ConsoleObject player = new("Player");
-
-            Camera camera = player.Add<Camera>();
-
-            camera.Size = new(64, 32);
+            Fixed.Console.SetWindowSize(new(64, 32));
 
             Background background1 = new(new byte[7, 14]
             {
@@ -70,19 +64,43 @@ namespace ZL.CS.CanvasDemo
                 {201,201,000,000,201,201,000,000,201,201,000,000,201,201},
             });
 
-            Position position = new(0, 0, 0);
+            Foreground foreground1 = new("★");
+
+            ConsoleObject player = new("Player");
+
+            //Camera.WillClear = false;
+
+            Camera.WillDrawOutline = true;
+
+            //Camera.OutlineColor = 201;
+
+            Camera.WillDrawCrosshair = true;
+
+            Camera.CrosshairColor = 201;
+
+            Camera.Main = player.Add<Camera>();
+
+            Text text = player.Add<Text>();
+
+            text.graphic = foreground1;
+
+            Position position = new(1, 0, -1);
+
+            player.Start();
 
             while (true)
             {
                 player.Transform.Position = position;
 
-                camera.Clear();
+                Camera.Main?.Clear();
 
-                camera.DrawCall(background1, new(-2, -1, 0));
+                player.DrawCall();
 
-                camera.DrawCall(background2, new(0, 0, 1));
+                Camera.Main?.DrawCall(background1, new(0, 0, 0));
 
-                camera.Render();
+                Camera.Main?.DrawCall(background2, new(2, 1, 1));
+
+                Camera.Main?.Render();
 
                 switch (Console.ReadKey(false).Key)
                 {

@@ -4,7 +4,7 @@ namespace ZL.CS
 {
     public static class SizeExtension
     {
-        public static Size GetHalf(this Size instance)
+        public static Size GetPivot(this Size instance)
         {
             return new(instance.Width >> 1, instance.Height >> 1);
         }

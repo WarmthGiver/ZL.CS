@@ -8,60 +8,117 @@ namespace ZL.CS.Graphics
 {
     public sealed class Camera : Component
     {
-        public static Camera? main { get; private set; } = null;
+        private static Camera? main = null;
 
-        private Size size;
-
-        public Size Size
+        public static Camera? Main
         {
-            get => size;
-
+            get => main;
+            
             set
             {
-                size = value;
-
-                pivot = size.GetHalf();
-
-                depthMap = new int[size.Height, size.Width];
-
-                backgroundColorMap = new byte[size.Height, size.Width];
-
-                foregroundColorMap = new byte[size.Height, size.Width];
-
-                foregroundTextMap = new char[size.Height, size.Width];
-
-                Clear();
+                main = value;
             }
         }
 
-        private Size pivot;
+        public static bool WillClear { get; set; } = true;
 
-        public int maxDepth { get; set; } = int.MaxValue;
+        public static bool WillDrawOutline { get; set; } = false;
 
-        private int[,] depthMap;
+        public static byte OutlineColor { get; set; } = 233;
 
-        private byte[,] backgroundColorMap;
+        public static bool WillDrawCrosshair { get; set; } = false;
 
-        private byte[,] foregroundColorMap;
+        public static byte CrosshairColor { get; set; } = 233;
 
-        private char[,] foregroundTextMap;
+        public static int MaxDepth { get; set; } = int.MaxValue;
 
-        private readonly ANSI.BufferBuilder bufferBuilder = new();
+        private static Size size;
+
+        private static Size pivot;
+
+        private static int[,] backgroundDepthMap;
+
+        private static int[,] foregroundDepthMap;
+
+        private static byte[,] backgroundColorMap;
+
+        private static byte[,] foregroundColorMap;
+
+        private static char[,] foregroundTextMap;
+
+        private static readonly ANSI.BufferBuilder bufferBuilder = new();
+
+        public override void Start()
+        {
+            size = Fixed.Console.GetWindowSize();
+
+            pivot = size.GetPivot();
+
+            backgroundDepthMap = new int[size.Height, size.Width];
+
+            foregroundDepthMap = new int[size.Height, size.Width];
+
+            backgroundColorMap = new byte[size.Height, size.Width];
+
+            foregroundColorMap = new byte[size.Height, size.Width];
+
+            foregroundTextMap = new char[size.Height, size.Width];
+
+            Clear();
+        }
 
         public void Clear()
         {
-            depthMap.Fill(maxDepth);
+            backgroundDepthMap.Fill(MaxDepth);
 
-            backgroundColorMap.Fill(Background.defaultColor);
+            foregroundDepthMap.Fill(MaxDepth);
 
-            foregroundColorMap.Fill(Foreground.defaultColor);
+            if (WillClear == true)
+            {
+                backgroundColorMap.Fill(Background.defaultColor);
 
-            foregroundTextMap.Fill(' ');
+                foregroundColorMap.Fill(Foreground.defaultColor);
+
+                foregroundTextMap.Fill(' ');
+            }
+
+            if (WillDrawOutline == true)
+            {
+                DrawOutline();
+            }
+
+            if (WillDrawCrosshair == true)
+            {
+                DrawCrosshair();
+            }
         }
 
-        public void SetMain()
+        private static void DrawOutline()
         {
-            main = this;
+            Point maxIndex = backgroundColorMap.GetMaxIndex();
+
+            for (int x = maxIndex.X; x >= 0; --x)
+            {
+                backgroundColorMap[0, x] = OutlineColor;
+
+                backgroundColorMap[maxIndex.Y, x] = OutlineColor;
+            }
+
+            for (int y = maxIndex.Y - 1; y >= 1; --y)
+            {
+                backgroundColorMap[y, 0] = OutlineColor;
+
+                backgroundColorMap[y, 1] = OutlineColor;
+
+                backgroundColorMap[y, maxIndex.X] = OutlineColor;
+
+                backgroundColorMap[y, maxIndex.X - 1] = OutlineColor;
+            }
+        }
+
+        private static void DrawCrosshair()
+        {
+
         }
 
         public void DrawCall(Background graphic, Position position)
@@ -71,7 +128,7 @@ namespace ZL.CS.Graphics
                 return;
             }
 
-            Point cameraLocation = consoleObject.Transform.Location - pivot;
+            Point cameraLocation = ConsoleObject.Transform.Location - pivot;
 
             Rectangle cameraView = new(cameraLocation, size);
 
@@ -91,7 +148,7 @@ namespace ZL.CS.Graphics
                 {
                     mapPoint.X = mapLocation.X + x;
 
-                    if (depthMap.Get(mapPoint) < position.depth)
+                    if (position.depth > backgroundDepthMap.Get(mapPoint))
                     {
                         continue;
                     }
@@ -101,9 +158,14 @@ namespace ZL.CS.Graphics
                         continue;
                     }
 
-                    depthMap.Set(mapPoint, position.depth);
+                    backgroundDepthMap.Set(mapPoint, position.depth);
 
                     backgroundColorMap.Set(mapPoint, graphic.colorMap[y, x]);
+
+                    if (position.depth > foregroundDepthMap.Get(mapPoint))
+                    {
+                        continue;
+                    }
 
                     foregroundTextMap.Set(mapPoint, ' ');
                 }
@@ -112,28 +174,32 @@ namespace ZL.CS.Graphics
 
         public void DrawCall(Foreground graphic, Position position)
         {
-            position.location -= graphic.pivot;
+            Point cameraLocation = ConsoleObject.Transform.Location - pivot;
 
-            Rectangle cameraView = new(consoleObject.Transform.Location - pivot, size);
+            Rectangle cameraView = new(cameraLocation, size);
 
-            Rectangle graphicRect = graphic.GetRect(position.location, cameraView);
+            Point graphicLocation = position.location - graphic.pivot;
+
+            Rectangle graphicRect = graphic.GetRect(graphicLocation, cameraView);
 
             Point mapPoint = new();
 
+            Point mapLocation = graphicLocation.Sub(cameraLocation);
+
             for (int y = graphicRect.Y; y < graphicRect.Height; ++y)
             {
-                mapPoint.Y = position.location.Y + y;
+                mapPoint.Y = mapLocation.Y + y;
 
                 for (int x = graphicRect.X; x < graphicRect.Width; ++x)
                 {
-                    mapPoint.X = position.location.X + x;
+                    mapPoint.X = mapLocation.X + x;
 
-                    if (depthMap.Get(mapPoint) < position.depth)
+                    if (foregroundDepthMap.Get(mapPoint) < position.depth)
                     {
                         continue;
                     }
 
-                    depthMap.Set(mapPoint, position.depth);
+                    foregroundDepthMap.Set(mapPoint, position.depth);
 
                     if (graphic.colorMap != null)
                     {

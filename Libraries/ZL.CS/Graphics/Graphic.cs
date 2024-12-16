@@ -1,4 +1,5 @@
 ﻿using System;
+
 using System.Drawing;
 
 namespace ZL.CS.Graphics
@@ -20,7 +21,7 @@ namespace ZL.CS.Graphics
         {
             this.size = size;
 
-            pivot = size.GetHalf();
+            pivot = size.GetPivot();
         }
 
         public abstract void DrawCall(Position position);

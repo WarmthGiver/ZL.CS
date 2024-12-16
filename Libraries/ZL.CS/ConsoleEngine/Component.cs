@@ -1,8 +1,8 @@
 ﻿namespace ZL.CS.ConsoleEngine
 {
-    public abstract class Component : Object
+    public abstract class Component : BehaviourObject
     {
-        public ConsoleObject consoleObject { get; private set; }
+        public ConsoleObject? ConsoleObject { get; private set; } = null;
 
         internal static T Instantiate<T>(ConsoleObject consoleObject)
             
@@ -10,7 +10,7 @@
         {
             T component = new()
             {
-                consoleObject = consoleObject
+                ConsoleObject = consoleObject
             };
 
             return component;

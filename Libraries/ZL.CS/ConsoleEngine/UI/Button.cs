@@ -6,7 +6,7 @@
 
         public Text? text = null;
 
-        protected override void Update()
+        public override void Update()
         {
 
         }

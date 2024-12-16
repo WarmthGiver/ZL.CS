@@ -10,7 +10,7 @@ using ZL.CS.Graphics;
 
 namespace ZL.CS.ConsoleEngine
 {
-    public abstract class Scene
+    public abstract class Scene : BehaviourObject
     {
         private int frameRate;
 
@@ -39,23 +39,6 @@ namespace ZL.CS.ConsoleEngine
             FrameRate = framesRate;
 
             this.size = size;
-
-            var consoleObject = CreateConsoleObject("Main Camera");
-
-            var camera = consoleObject.Add<Camera>();
-
-            camera.Size = size;
-        }
-
-        protected Camera CreateCamera(string name, Size size)
-        {
-            var consoleObject = CreateConsoleObject(name);
-
-            var camera = consoleObject.Add<Camera>();
-
-            camera.Size = size;
-
-            return camera;
         }
 
         protected ConsoleObject CreateConsoleObject(string name)
@@ -67,15 +50,23 @@ namespace ZL.CS.ConsoleEngine
             return consoleObject;
         }
 
-        public virtual void Start()
+        public override void Start()
         {
+            foreach (var consoleObject in consoleObjects)
+            {
+                if (consoleObject.IsEnabled == true)
+                {
+                    consoleObject.Start();
+                }
+            }
+
             Fixed.Console.SetWindowSize(size);
 
             fixedUpdate = Task.Run(FixedUpdate);
 
             update = Task.Run(Update);
 
-            draw = Task.Run(Draw);
+            drawCall = Task.Run(DrawCall);
         }
 
         public void End()
@@ -85,13 +76,18 @@ namespace ZL.CS.ConsoleEngine
 
         private Task fixedUpdate;
 
-        private async void FixedUpdate()
+        public override async void FixedUpdate()
         {
             while (true)
             {
                 foreach (var consoleObject in consoleObjects)
                 {
-                    consoleObject.TryFixedUpdate();
+                    if (consoleObject.IsEnabled == false)
+                    {
+                        continue;
+                    }
+
+                    consoleObject.FixedUpdate();
                 }
 
                 await Task.Delay(threadDelay);
@@ -100,29 +96,56 @@ namespace ZL.CS.ConsoleEngine
 
         private Task update;
 
-        private void Update()
+        public override void Update()
         {
             while (true)
             {
                 foreach (var consoleObject in consoleObjects)
                 {
-                    consoleObject.TryUpdate();
+                    if (consoleObject.IsEnabled == false)
+                    {
+                        continue;
+                    }
+
+                    consoleObject.Update();
                 }
+
+                LateUpdate();
             }
         }
 
-        private Task draw;
+        public override void LateUpdate()
+        {
+            foreach (var consoleObject in consoleObjects)
+            {
+                if (consoleObject.IsEnabled == false)
+                {
+                    continue;
+                }
 
-        private async void Draw()
+                consoleObject.LateUpdate();
+            }
+        }
+
+        private Task drawCall;
+
+        public override async void DrawCall()
         {
             while (true)
             {
-                foreach (var subCanvas in cameras)
+                Camera.Main?.Clear();
+
+                foreach (var consoleObject in consoleObjects)
                 {
-                    subCanvas.Render();
+                    if (consoleObject.IsEnabled == false)
+                    {
+                        continue;
+                    }
+
+                    consoleObject.DrawCall();
                 }
 
-                Camera.main?.Render();
+                Camera.Main?.Render();
 
                 await Task.Delay(threadDelay);
             }

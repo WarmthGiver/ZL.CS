@@ -1,21 +1,29 @@
 ﻿#pragma warning disable CA1416
 
-using System;
-
 using System.Drawing;
 
 namespace ZL.CS.Fixed
 {
     public static class Console
     {
-        public static void SetWindowSize(Size size)
+        public static Size GetWindowSize()
         {
-            System.Console.SetWindowSize(size.Width, size.Height);
+            return new(System.Console.WindowWidth, System.Console.WindowHeight);
         }
 
-        public static void SetCursorPosition(ValueTuple<int, int> position)
+        public static void SetWindowSize(Size value)
         {
-            System.Console.SetCursorPosition(position.Item1, position.Item2);
+            System.Console.SetWindowSize(value.Width, value.Height);
+        }
+
+        public static Point GetCursorPosition()
+        {
+            return new(System.Console.CursorLeft, System.Console.CursorTop);
+        }
+
+        public static void SetCursorPosition(Point value)
+        {
+            System.Console.SetCursorPosition(value.X, value.Y);
         }
     }
 }

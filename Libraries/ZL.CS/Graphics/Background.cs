@@ -8,7 +8,7 @@
 
         public override void DrawCall(Position position)
         {
-            Camera.main?.DrawCall(this, position);
+            Camera.Main?.DrawCall(this, position);
         }
     }
 }

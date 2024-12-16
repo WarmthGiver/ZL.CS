@@ -2,7 +2,7 @@
 
 namespace ZL.CS.ConsoleEngine
 {
-    public sealed class ConsoleObject : Object
+    public sealed class ConsoleObject : BehaviourObject
     {
         public readonly string name;
 
@@ -49,11 +49,68 @@ namespace ZL.CS.ConsoleEngine
             components.Add(component);
         }
 
-        protected override void Update()
+        public override void Start()
         {
             foreach (Component component in components)
             {
-                component.TryUpdate();
+                if (component.IsEnabled == false)
+                {
+                    continue;
+                }
+
+                component.Start();
+            }
+        }
+
+        public override void FixedUpdate()
+        {
+            foreach (Component component in components)
+            {
+                if (component.IsEnabled == false)
+                {
+                    continue;
+                }
+
+                component.FixedUpdate();
+            }
+        }
+
+        public override void Update()
+        {
+            foreach (Component component in components)
+            {
+                if (component.IsEnabled == false)
+                {
+                    continue;
+                }
+
+                component.Update();
+            }
+        }
+
+        public override void LateUpdate()
+        {
+            foreach (Component component in components)
+            {
+                if (component.IsEnabled == false)
+                {
+                    continue;
+                }
+
+                component.LateUpdate();
+            }
+        }
+
+        public override void DrawCall()
+        {
+            foreach (Component component in components)
+            {
+                if (component.IsEnabled == false)
+                {
+                    continue;
+                }
+
+                component.DrawCall();
             }
         }
     }

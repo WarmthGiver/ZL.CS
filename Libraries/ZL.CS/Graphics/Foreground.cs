@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace ZL.CS.Graphics
+﻿namespace ZL.CS.Graphics
 {
     public sealed class Foreground : Graphic
     {
-        public const byte defaultColor = (int)ConsoleColor.Gray;
+        public const byte defaultColor = 007;
 
         public readonly char[,] textMap;
 
@@ -20,7 +18,7 @@ namespace ZL.CS.Graphics
 
         public override void DrawCall(Position position)
         {
-            Camera.main?.DrawCall(this, position);
+            Camera.Main?.DrawCall(this, position);
         }
     }
 }
