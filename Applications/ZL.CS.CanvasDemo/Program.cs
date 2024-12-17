@@ -16,7 +16,7 @@ namespace ZL.CS.CameraDemo
         {
             Console.CursorVisible = false;
 
-            Fixed.Console.SetWindowSize(new(64, 32));
+            FixedConsole.SetWindowSize(32);
 
             Background background1 = new(new byte[7, 14]
             {
@@ -64,7 +64,7 @@ namespace ZL.CS.CameraDemo
                 {201,201,000,000,201,201,000,000,201,201,000,000,201,201},
             });
 
-            Foreground foreground1 = new("★");
+            Foreground foreground1 = new("★$");
 
             ConsoleObject player = new("Player");
 

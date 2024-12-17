@@ -31,6 +31,10 @@ namespace ZL.CS.ANSIDemo
             builder.ClearColor();
 
             Console.WriteLine(builder.ToString());
+
+            builder.Clear();
+
+            Console.WriteLine();
         }
     }
 }

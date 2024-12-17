@@ -60,7 +60,7 @@ namespace ZL.CS.ConsoleEngine
                 }
             }
 
-            Fixed.Console.SetWindowSize(size);
+            FixedConsole.SetWindowSize(size);
 
             fixedUpdate = Task.Run(FixedUpdate);
 

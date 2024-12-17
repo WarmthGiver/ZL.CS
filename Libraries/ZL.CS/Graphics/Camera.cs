@@ -50,7 +50,7 @@ namespace ZL.CS.Graphics
 
         public override void Start()
         {
-            size = Fixed.Console.GetWindowSize();
+            size = FixedConsole.GetWindowSize();
 
             pivot = size.GetPivot();
 
@@ -215,11 +215,25 @@ namespace ZL.CS.Graphics
         {
             for (int y = 0; ;)
             {
+                bool isHalfWidth = true;
+
                 for (int x = 0; x < size.Width; ++x)
                 {
+                    if (isHalfWidth == false && foregroundTextMap[y, x] == ' ')
+                    {
+                        isHalfWidth = true;
+
+                        continue;
+                    }
+
                     bufferBuilder.SetColor(backgroundColorMap[y, x], foregroundColorMap[y, x]);
 
                     bufferBuilder.Append(foregroundTextMap[y, x]);
+
+                    if (foregroundTextMap[y, x].IsHalfWidth() == false)
+                    {
+                        isHalfWidth = false;
+                    }
                 }
 
                 if (++y >= size.Height)
