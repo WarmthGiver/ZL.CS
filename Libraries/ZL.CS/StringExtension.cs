@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+
+using System.Drawing;
 
 namespace ZL.CS
 {
@@ -6,11 +8,11 @@ namespace ZL.CS
     {
         public static char[,] ToChar(this string[] instance)
         {
-            Size size = instance.GetSize();
+            Size size = instance.GetMaxSize();
 
-            var textMap = new char[size.Height, size.Width];
+            var charMap = new char[size.Height, size.Width];
 
-            textMap.Fill(' ');
+            charMap.Fill(' ');
 
             for (int y = 0; y < size.Height; ++y)
             {
@@ -18,20 +20,34 @@ namespace ZL.CS
                 {
                     if (x < instance[y].Length)
                     {
-                        textMap[y, x] = instance[y][x];
+                        charMap[y, x] = instance[y][x];
                     }
 
                     else
                     {
-                        textMap[y, x] = ' ';
+                        charMap[y, x] = ' ';
                     }
                 }
             }
 
-            return textMap;
+            return charMap;
         }
 
-        public static Size GetSize(this string[] instance)
+        public static List<FixedChar>[] ToFixedChar(this string[] instance)
+        {
+            Size size = instance.GetMaxSize();
+
+            var fixedCharMap = new List<FixedChar>[size.Height];
+
+            for (int y = 0; y < size.Height; ++y)
+            {
+                fixedCharMap[y] = instance[y].ToFixedChar();
+            }
+
+            return fixedCharMap;
+        }
+
+        public static Size GetMaxSize(this string[] instance)
         {
             return new(instance.GetMaxWidth(), instance.Length);
         }

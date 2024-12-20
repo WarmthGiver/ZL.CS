@@ -44,7 +44,7 @@ namespace ZL.CS.Graphics
 
         private static byte[,] foregroundColorMap;
 
-        private static char[,] foregroundTextMap;
+        private static FixedChar[,] foregroundTextMap;
 
         private static readonly ANSI.BufferBuilder bufferBuilder = new();
 
@@ -62,7 +62,7 @@ namespace ZL.CS.Graphics
 
             foregroundColorMap = new byte[size.Height, size.Width];
 
-            foregroundTextMap = new char[size.Height, size.Width];
+            foregroundTextMap = new FixedChar[size.Height, size.Width];
 
             Clear();
         }
@@ -79,7 +79,7 @@ namespace ZL.CS.Graphics
 
                 foregroundColorMap.Fill(Foreground.defaultColor);
 
-                foregroundTextMap.Fill(' ');
+                foregroundTextMap.Fill(new FixedChar());
             }
 
             if (WillDrawOutline == true)
@@ -123,11 +123,6 @@ namespace ZL.CS.Graphics
 
         public void DrawCall(Background graphic, Position position)
         {
-            if (graphic.colorMap == null)
-            {
-                return;
-            }
-
             Point cameraLocation = ConsoleObject.Transform.Location - pivot;
 
             Rectangle cameraView = new(cameraLocation, size);
@@ -167,7 +162,7 @@ namespace ZL.CS.Graphics
                         continue;
                     }
 
-                    foregroundTextMap.Set(mapPoint, ' ');
+                    foregroundTextMap.Set(mapPoint, new());
                 }
             }
         }
@@ -190,7 +185,7 @@ namespace ZL.CS.Graphics
             {
                 mapPoint.Y = mapLocation.Y + y;
 
-                for (int x = graphicRect.X; x < graphicRect.Width; ++x)
+                for (int x = graphicRect.X; x < graphicRect.Width && x < graphic.textMap[y].Count; ++x)
                 {
                     mapPoint.X = mapLocation.X + x;
 
@@ -206,7 +201,7 @@ namespace ZL.CS.Graphics
                         foregroundColorMap.Set(mapPoint, graphic.colorMap[y, x]);
                     }
 
-                    foregroundTextMap.Set(mapPoint, graphic.textMap[y, x]);
+                    foregroundTextMap.Set(mapPoint, graphic.textMap[y][x]);
                 }
             }
         }
@@ -215,25 +210,11 @@ namespace ZL.CS.Graphics
         {
             for (int y = 0; ;)
             {
-                bool isHalfWidth = true;
-
                 for (int x = 0; x < size.Width; ++x)
                 {
-                    if (isHalfWidth == false && foregroundTextMap[y, x] == ' ')
-                    {
-                        isHalfWidth = true;
-
-                        continue;
-                    }
-
                     bufferBuilder.SetColor(backgroundColorMap[y, x], foregroundColorMap[y, x]);
 
-                    bufferBuilder.Append(foregroundTextMap[y, x]);
-
-                    if (foregroundTextMap[y, x].IsHalfWidth() == false)
-                    {
-                        isHalfWidth = false;
-                    }
+                    bufferBuilder.Append(foregroundTextMap[y, x].ToString());
                 }
 
                 if (++y >= size.Height)

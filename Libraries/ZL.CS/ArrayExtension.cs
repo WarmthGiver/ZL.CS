@@ -1,4 +1,6 @@
-﻿using System.Drawing;
+﻿using System.Collections;
+
+using System.Drawing;
 
 namespace ZL.CS
 {
@@ -17,6 +19,30 @@ namespace ZL.CS
         public static Size GetSize<T>(this T[,] instance)
         {
             return new(instance.GetLength(1), instance.GetLength(0));
+        }
+
+        public static Size GetMaxSize<TCollection>(this TCollection[] instance)
+
+            where TCollection : ICollection
+        {
+            return new(instance.GetMaxWidth(), instance.Length);
+        }
+
+        public static int GetMaxWidth<TCollection>(this TCollection[] instance)
+
+            where TCollection : ICollection
+        {
+            int width = instance[0].Count;
+
+            for (int i = 1; i < instance.Length; ++i)
+            {
+                if (width < instance[i].Count)
+                {
+                    width = instance[i].Count;
+                }
+            }
+
+            return width;
         }
 
         public static Point GetMaxIndex<T>(this T[,] instance)

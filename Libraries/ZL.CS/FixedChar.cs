@@ -1,46 +1,50 @@
-﻿using System.Collections.Generic;
-
-namespace ZL.CS
+﻿namespace ZL.CS
 {
     public struct FixedChar
     {
-        public char left = ' ';
+        public char? Left { get; private set; } = null;
 
-        public char right = ' ';
+        public char? Right { get; private set; } = null;
 
-        public FixedChar(char value)
+        public FixedChar(char left)
         {
-            left = value;
+            TryAppend(left);
+        }
 
-            right = '\0';
+        public FixedChar(char left, char right)
+        {
+            TryAppend(left);
+
+            TryAppend(right);
         }
 
         public bool TryAppend(char value)
         {
-            if (value.IsHalfWidth() == true)
+            if (Left == null)
             {
-                if (left == ' ')
+                Left = value;
+
+                if (value.IsHalfWidth() == false)
                 {
-                    left = value;
-
-                    return true;
+                    Right = '\0';
                 }
-
-                else if (right == ' ')
-                {
-                    right = value;
-
-                    return true;
-                }
-            }
-
-            else if (left != ' ')
-            {
-                left = value;
-
-                right = '\0';
 
                 return true;
+            }
+
+            else if (Right == null)
+            {
+                if (value.IsHalfWidth() == false)
+                {
+                    Right = ' ';
+                }
+
+                else
+                {
+                    Right = value;
+
+                    return true;
+                }
             }
 
             return false;
@@ -48,26 +52,7 @@ namespace ZL.CS
 
         public override string ToString()
         {
-            return $"{left}{right}";
-        }
-
-        public static List<FixedChar> Convert(string value)
-        {
-            List<FixedChar> fixedChars = new();
-
-            FixedChar fixedChar = new();
-
-            for (int i = 0; i < value.Length; ++i)
-            {
-                if (fixedChar.TryAppend(value[i]) == false)
-                {
-                    fixedChar = new(value[i]);
-
-                    fixedChars.Add(fixedChar);
-                }
-            }
-
-            return fixedChars;
+            return $"{Left}{Right}";
         }
     }
 }
