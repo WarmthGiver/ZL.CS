@@ -146,7 +146,7 @@ namespace ZL.CS.Graphics
                 isEscapeCodeOpened = false;
             }
 
-            public void ClearColor()
+            public void AppendReset()
             {
                 escapeCodeBuilder.Append(reset);
 

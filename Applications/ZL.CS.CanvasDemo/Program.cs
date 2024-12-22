@@ -56,7 +56,7 @@ namespace ZL.CS.CameraDemo
 
             //Camera.WillClear = false;
 
-            Camera.WillDrawOutline = true;
+            //Camera.WillDrawOutline = true;
 
             //Camera.OutlineColor = 201;
 
@@ -70,7 +70,7 @@ namespace ZL.CS.CameraDemo
 
             text.graphic = foreground1;
 
-            Position position = new(1, 0, -1);
+            Position position = new(0, 0, -1);
 
             player.Start();
 
@@ -88,32 +88,7 @@ namespace ZL.CS.CameraDemo
 
                 Camera.Main?.Render();
 
-                switch (Console.ReadKey(false).Key)
-                {
-                    case ConsoleKey.UpArrow:
-
-                        position.location.Y -= 1;
-
-                        break;
-
-                    case ConsoleKey.DownArrow:
-
-                        position.location.Y += 1;
-
-                        break;
-
-                    case ConsoleKey.LeftArrow:
-
-                        position.location.X -= 2;
-
-                        break;
-
-                    case ConsoleKey.RightArrow:
-
-                        position.location.X += 2;
-
-                        break;
-                }
+                
             }
         }
     }

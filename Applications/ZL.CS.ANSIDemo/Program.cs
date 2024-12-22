@@ -28,13 +28,9 @@ namespace ZL.CS.ANSIDemo
 
             builder.Append($" {builder.BackgroundColor.ToString("000")},{builder.ForegroundColor.ToString("000")} ");
 
-            builder.ClearColor();
+            builder.AppendReset();
 
             Console.WriteLine(builder.ToString());
-
-            builder.Clear();
-
-            Console.WriteLine();
         }
     }
 }

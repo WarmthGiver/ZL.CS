@@ -5,10 +5,5 @@
         public Image? image = null;
 
         public Text? text = null;
-
-        public override void Update()
-        {
-
-        }
     }
 }

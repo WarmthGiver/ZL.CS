@@ -6,12 +6,12 @@ using System.Drawing;
 
 using System.Threading.Tasks;
 
-using ZL.CS.Graphics;
-
 namespace ZL.CS.ConsoleEngine
 {
     public abstract class Scene : BehaviourObject
     {
+        private static Scene? instance = null;
+
         private int frameRate;
 
         public int FrameRate
@@ -30,28 +30,35 @@ namespace ZL.CS.ConsoleEngine
 
         protected readonly Size size;
 
-        protected readonly List<Camera> cameras = new();
-
         private readonly List<ConsoleObject> consoleObjects = new();
 
-        protected Scene(int framesRate, Size size)
+        protected ConsoleObject CreateConsoleObject(string name, Transform? parent = null)
         {
-            FrameRate = framesRate;
-
-            this.size = size;
+            return CreateConsoleObject(name, new(), parent);
         }
 
-        protected ConsoleObject CreateConsoleObject(string name)
+        protected ConsoleObject CreateConsoleObject(string name, Position position, Transform? parent = null)
         {
-            ConsoleObject consoleObject = new(name);
+            ConsoleObject consoleObject = new(name, position, parent);
 
             consoleObjects.Add(consoleObject);
 
             return consoleObject;
         }
 
-        public override void Start()
+        internal void Load()
         {
+            instance?.End();
+
+            instance = this;
+
+            instance.Start();
+        }
+
+        internal override void Start()
+        {
+            FrameRate = 60;
+
             foreach (var consoleObject in consoleObjects)
             {
                 if (consoleObject.IsEnabled == true)
@@ -60,8 +67,6 @@ namespace ZL.CS.ConsoleEngine
                 }
             }
 
-            FixedConsole.SetWindowSize(size);
-
             fixedUpdate = Task.Run(FixedUpdate);
 
             update = Task.Run(Update);
@@ -69,14 +74,14 @@ namespace ZL.CS.ConsoleEngine
             drawCall = Task.Run(DrawCall);
         }
 
-        public void End()
+        private void End()
         {
 
         }
 
         private Task fixedUpdate;
 
-        public override async void FixedUpdate()
+        internal override async void FixedUpdate()
         {
             while (true)
             {
@@ -96,7 +101,7 @@ namespace ZL.CS.ConsoleEngine
 
         private Task update;
 
-        public override void Update()
+        internal override void Update()
         {
             while (true)
             {
@@ -114,7 +119,7 @@ namespace ZL.CS.ConsoleEngine
             }
         }
 
-        public override void LateUpdate()
+        internal override void LateUpdate()
         {
             foreach (var consoleObject in consoleObjects)
             {
@@ -129,7 +134,7 @@ namespace ZL.CS.ConsoleEngine
 
         private Task drawCall;
 
-        public override async void DrawCall()
+        internal override async void DrawCall()
         {
             while (true)
             {

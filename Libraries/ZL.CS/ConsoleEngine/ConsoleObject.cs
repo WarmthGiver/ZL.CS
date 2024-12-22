@@ -12,20 +12,18 @@ namespace ZL.CS.ConsoleEngine
 
         private readonly List<Component> components = new();
 
-        public ConsoleObject(string name)
+        public ConsoleObject(string name, Position position, Transform? parent)
         {
             this.name = name;
 
-            Transform = new();
+            Transform = new(position, parent);
         }
 
         public RectTransform AddRectTransform()
         {
             if (RectTransform == null)
             {
-                RectTransform = Component.Instantiate<RectTransform>(this);
-
-                RectTransform.Set(Transform);
+                RectTransform = new RectTransform(Transform);
 
                 Transform = RectTransform;
             }
@@ -49,7 +47,7 @@ namespace ZL.CS.ConsoleEngine
             components.Add(component);
         }
 
-        public override void Start()
+        internal override void Start()
         {
             foreach (Component component in components)
             {
@@ -62,7 +60,7 @@ namespace ZL.CS.ConsoleEngine
             }
         }
 
-        public override void FixedUpdate()
+        internal override void FixedUpdate()
         {
             foreach (Component component in components)
             {
@@ -75,7 +73,7 @@ namespace ZL.CS.ConsoleEngine
             }
         }
 
-        public override void Update()
+        internal override void Update()
         {
             foreach (Component component in components)
             {
@@ -88,7 +86,7 @@ namespace ZL.CS.ConsoleEngine
             }
         }
 
-        public override void LateUpdate()
+        internal override void LateUpdate()
         {
             foreach (Component component in components)
             {
@@ -101,7 +99,7 @@ namespace ZL.CS.ConsoleEngine
             }
         }
 
-        public override void DrawCall()
+        internal override void DrawCall()
         {
             foreach (Component component in components)
             {

@@ -8,7 +8,7 @@ namespace ZL.CS.ConsoleEngine.UI
     {
         public TGraphic? graphic = null;
 
-        public override void DrawCall()
+        internal override void DrawCall()
         {
             graphic?.DrawCall(ConsoleObject.Transform.Position);
         }

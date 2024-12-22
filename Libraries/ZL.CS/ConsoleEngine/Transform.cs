@@ -60,9 +60,14 @@ namespace ZL.CS.ConsoleEngine
 
             set
             {
+                if (value == parent)
+                {
+                    return;
+                }
+
                 if (value != null)
                 {
-                    localPosition -= value.Position;
+                    localPosition = position - value.position;
                 }
 
                 else if (parent != null)
@@ -78,9 +83,11 @@ namespace ZL.CS.ConsoleEngine
 
         private readonly LinkedList<Transform> children = new();
 
-        public void Set(Transform transform)
+        public Transform(Position position, Transform? parent)
         {
-            Position = transform.Position;
+            this.position = position;
+
+            Parent = parent;
         }
 
         public virtual void Move(Position position)

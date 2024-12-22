@@ -24,6 +24,8 @@ namespace ZL.CS.ConsoleEngine
 
         public Size Pivot { get; private set; }
 
+        public RectTransform(Transform @base) : base(@base.Position, @base.Parent) { }
+
         public override void Move(Position position)
         {
             rect.Location = rect.Location.Add(position.location);

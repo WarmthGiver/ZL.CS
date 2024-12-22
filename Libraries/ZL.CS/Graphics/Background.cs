@@ -1,4 +1,6 @@
-﻿namespace ZL.CS.Graphics
+﻿using ZL.CS.ConsoleEngine;
+
+namespace ZL.CS.Graphics
 {
     public sealed class Background : Graphic
     {

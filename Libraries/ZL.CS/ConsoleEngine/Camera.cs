@@ -2,9 +2,9 @@
 
 using System.Drawing;
 
-using ZL.CS.ConsoleEngine;
+using ZL.CS.Graphics;
 
-namespace ZL.CS.Graphics
+namespace ZL.CS.ConsoleEngine
 {
     public sealed class Camera : Component
     {
@@ -13,7 +13,7 @@ namespace ZL.CS.Graphics
         public static Camera? Main
         {
             get => main;
-            
+
             set
             {
                 main = value;
@@ -48,7 +48,7 @@ namespace ZL.CS.Graphics
 
         private static readonly ANSI.BufferBuilder bufferBuilder = new();
 
-        public override void Start()
+        internal override void Start()
         {
             size = FixedConsole.GetWindowSize();
 
@@ -67,7 +67,7 @@ namespace ZL.CS.Graphics
             Clear();
         }
 
-        public void Clear()
+        internal void Clear()
         {
             backgroundDepthMap.Fill(MaxDepth);
 
@@ -79,7 +79,7 @@ namespace ZL.CS.Graphics
 
                 foregroundColorMap.Fill(Foreground.defaultColor);
 
-                foregroundTextMap.Fill(new FixedChar());
+                foregroundTextMap.Fill(new FixedChar(' ', ' '));
             }
 
             if (WillDrawOutline == true)
@@ -108,11 +108,7 @@ namespace ZL.CS.Graphics
             {
                 backgroundColorMap[y, 0] = OutlineColor;
 
-                backgroundColorMap[y, 1] = OutlineColor;
-
                 backgroundColorMap[y, maxIndex.X] = OutlineColor;
-
-                backgroundColorMap[y, maxIndex.X - 1] = OutlineColor;
             }
         }
 
@@ -121,7 +117,7 @@ namespace ZL.CS.Graphics
 
         }
 
-        public void DrawCall(Background graphic, Position position)
+        internal void DrawCall(Background graphic, Position position)
         {
             Point cameraLocation = ConsoleObject.Transform.Location - pivot;
 
@@ -162,12 +158,12 @@ namespace ZL.CS.Graphics
                         continue;
                     }
 
-                    foregroundTextMap.Set(mapPoint, new());
+                    foregroundTextMap.Set(mapPoint, new(' ', ' '));
                 }
             }
         }
 
-        public void DrawCall(Foreground graphic, Position position)
+        internal void DrawCall(Foreground graphic, Position position)
         {
             Point cameraLocation = ConsoleObject.Transform.Location - pivot;
 
@@ -206,7 +202,7 @@ namespace ZL.CS.Graphics
             }
         }
 
-        public void Render()
+        internal void Render()
         {
             for (int y = 0; ;)
             {

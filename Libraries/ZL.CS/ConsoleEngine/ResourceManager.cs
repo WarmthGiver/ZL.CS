@@ -6,9 +6,9 @@ namespace ZL.CS.Graphics
 {
     public static class ResourceManager
     {
-        public static Dictionary<string, Background> backgrounds = new();
+        public static readonly Dictionary<string, Background> backgrounds = new();
 
-        public static Dictionary<string, Foreground> foregrounds = new();
+        public static readonly Dictionary<string, Foreground> foregrounds = new();
 
         public static void AddBackground<TEnum>(TEnum name, Background background)
 

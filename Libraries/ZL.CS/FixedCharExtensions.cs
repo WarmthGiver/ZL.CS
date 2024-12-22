@@ -20,6 +20,8 @@ namespace ZL.CS
                 }
             }
 
+            fixedChar.TryAppend(' ');
+
             result.Add(fixedChar);
 
             result.TrimExcess();

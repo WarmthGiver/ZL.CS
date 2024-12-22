@@ -1,10 +1,12 @@
-﻿namespace ZL.CS.FixedCharDemo
+﻿using System;
+
+namespace ZL.CS.FixedCharDemo
 {
     internal class Program
     {
         private static void Main(string[] args)
         {
-            string text = "a★aa★a aa";
+            string text = "a★aa★aaa★a a";
 
             //Console.WriteLine(text);
 
@@ -14,6 +16,8 @@
             {
                 Console.Write(item.ToString());
             }
+
+            Console.Write("b");
         }
     }
 }
