@@ -4,11 +4,11 @@ using ZL.CS.ConsoleEngine;
 
 using ZL.CS.Graphics;
 
-namespace ZL.CS.SceneDemo
+namespace ZL.CS.ApplicationDemo
 {
-    internal class Program
+    internal sealed class DemoApplication : Application
     {
-        private static void Main(string[] args)
+        static DemoApplication()
         {
             ResourceManager.AddBackground("BG1", new(new byte[,]
             {
@@ -47,40 +47,11 @@ namespace ZL.CS.SceneDemo
             Console.CursorVisible = false;
 
             FixedConsole.SetWindowSize(32);
+        }
 
-            SceneManager.Load<DemoScene>();
-
-            Position position = new(0, 0, 0);
-
-            while (true)
-            {
-                switch (Console.ReadKey(false).Key)
-                {
-                    case ConsoleKey.UpArrow:
-
-                        --position.location.Y;
-
-                        break;
-
-                    case ConsoleKey.DownArrow:
-
-                        ++position.location.Y;
-
-                        break;
-
-                    case ConsoleKey.LeftArrow:
-
-                        --position.location.X;
-
-                        break;
-
-                    case ConsoleKey.RightArrow:
-
-                        ++position.location.X;
-
-                        break;
-                }
-            }
+        protected override void Start()
+        {
+            Scene.Load<DemoScene>();
         }
     }
 }

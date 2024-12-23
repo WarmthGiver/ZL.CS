@@ -11,14 +11,14 @@
             set => isEnabled = value;
         }
 
-        internal virtual void Start() { }
+        internal virtual void CallStart() { }
 
-        internal virtual void FixedUpdate() { }
+        internal virtual void CallFixedUpdate() { }
 
-        internal virtual void Update() { }
+        internal virtual void CallUpdate() { }
 
-        internal virtual void LateUpdate() { }
+        internal virtual void CallLateUpdate() { }
 
-        internal virtual void DrawCall() { }
+        internal virtual void CallDraw() { }
     }
 }

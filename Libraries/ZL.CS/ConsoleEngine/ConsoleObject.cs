@@ -19,7 +19,7 @@ namespace ZL.CS.ConsoleEngine
             Transform = new(position, parent);
         }
 
-        public RectTransform AddRectTransform()
+        internal RectTransform AddRectTransform()
         {
             if (RectTransform == null)
             {
@@ -31,23 +31,38 @@ namespace ZL.CS.ConsoleEngine
             return RectTransform;
         }
 
-        public T Add<T>()
+        public T AddComponent<T>()
 
             where T : Component, new()
         {
             var component = Component.Instantiate<T>(this);
 
-            Add(component);
+            AddComponent(component);
 
             return component;
         }
 
-        public void Add(Component component)
+        public void AddComponent(Component component)
         {
             components.Add(component);
         }
 
-        internal override void Start()
+        public T? GetComponent<T>()
+
+            where T : Component
+        {
+            foreach (var component in components)
+            {
+                if (component is T result)
+                {
+                    return result;
+                }
+            }
+
+            return null;
+        }
+
+        internal override void CallStart()
         {
             foreach (Component component in components)
             {
@@ -56,11 +71,11 @@ namespace ZL.CS.ConsoleEngine
                     continue;
                 }
 
-                component.Start();
+                component.CallStart();
             }
         }
 
-        internal override void FixedUpdate()
+        internal override void CallFixedUpdate()
         {
             foreach (Component component in components)
             {
@@ -69,11 +84,11 @@ namespace ZL.CS.ConsoleEngine
                     continue;
                 }
 
-                component.FixedUpdate();
+                component.CallFixedUpdate();
             }
         }
 
-        internal override void Update()
+        internal override void CallUpdate()
         {
             foreach (Component component in components)
             {
@@ -82,11 +97,11 @@ namespace ZL.CS.ConsoleEngine
                     continue;
                 }
 
-                component.Update();
+                component.CallUpdate();
             }
         }
 
-        internal override void LateUpdate()
+        internal override void CallLateUpdate()
         {
             foreach (Component component in components)
             {
@@ -95,11 +110,11 @@ namespace ZL.CS.ConsoleEngine
                     continue;
                 }
 
-                component.LateUpdate();
+                component.CallLateUpdate();
             }
         }
 
-        internal override void DrawCall()
+        internal override void CallDraw()
         {
             foreach (Component component in components)
             {
@@ -108,7 +123,7 @@ namespace ZL.CS.ConsoleEngine
                     continue;
                 }
 
-                component.DrawCall();
+                component.CallDraw();
             }
         }
     }

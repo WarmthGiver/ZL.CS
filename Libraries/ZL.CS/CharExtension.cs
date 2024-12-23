@@ -1,6 +1,6 @@
 ﻿namespace ZL.CS
 {
-    public static class CharExtension
+    public static partial class CharExtension
     {
         public static bool IsHalfWidth(this char instance)
         {

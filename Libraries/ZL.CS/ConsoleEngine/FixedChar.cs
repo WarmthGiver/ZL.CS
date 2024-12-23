@@ -1,4 +1,4 @@
-﻿namespace ZL.CS
+﻿namespace ZL.CS.ConsoleEngine
 {
     public struct FixedChar
     {

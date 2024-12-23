@@ -2,7 +2,7 @@
 
 namespace ZL.CS
 {
-    public static class SizeExtension
+    public static partial class SizeExtension
     {
         public static Size GetPivot(this Size instance)
         {

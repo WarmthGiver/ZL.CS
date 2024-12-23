@@ -48,7 +48,7 @@ namespace ZL.CS.ConsoleEngine
 
         private static readonly ANSI.BufferBuilder bufferBuilder = new();
 
-        internal override void Start()
+        internal override void CallStart()
         {
             size = FixedConsole.GetWindowSize();
 
@@ -117,7 +117,9 @@ namespace ZL.CS.ConsoleEngine
 
         }
 
-        internal void DrawCall(Background graphic, Position position)
+        internal void Draw<TGraphic>(TGraphic? graphic, Position position)
+
+            where TGraphic : Graphic
         {
             Point cameraLocation = ConsoleObject.Transform.Location - pivot;
 
@@ -131,73 +133,64 @@ namespace ZL.CS.ConsoleEngine
 
             Point mapLocation = graphicLocation.Sub(cameraLocation);
 
-            for (int y = graphicRect.Y; y < graphicRect.Height; ++y)
+            if (graphic is Background background)
             {
-                mapPoint.Y = mapLocation.Y + y;
-
-                for (int x = graphicRect.X; x < graphicRect.Width; ++x)
+                for (int y = graphicRect.Y; y < graphicRect.Height; ++y)
                 {
-                    mapPoint.X = mapLocation.X + x;
+                    mapPoint.Y = mapLocation.Y + y;
 
-                    if (position.depth > backgroundDepthMap.Get(mapPoint))
+                    for (int x = graphicRect.X; x < graphicRect.Width; ++x)
                     {
-                        continue;
+                        mapPoint.X = mapLocation.X + x;
+
+                        if (position.depth > backgroundDepthMap.Get(mapPoint))
+                        {
+                            continue;
+                        }
+
+                        if (background.colorMap[y, x] == 0)
+                        {
+                            continue;
+                        }
+
+                        backgroundDepthMap.Set(mapPoint, position.depth);
+
+                        backgroundColorMap.Set(mapPoint, background.colorMap[y, x]);
+
+                        if (position.depth > foregroundDepthMap.Get(mapPoint))
+                        {
+                            continue;
+                        }
+
+                        foregroundTextMap.Set(mapPoint, new(' ', ' '));
                     }
-
-                    if (graphic.colorMap[y, x] == 0)
-                    {
-                        continue;
-                    }
-
-                    backgroundDepthMap.Set(mapPoint, position.depth);
-
-                    backgroundColorMap.Set(mapPoint, graphic.colorMap[y, x]);
-
-                    if (position.depth > foregroundDepthMap.Get(mapPoint))
-                    {
-                        continue;
-                    }
-
-                    foregroundTextMap.Set(mapPoint, new(' ', ' '));
                 }
             }
-        }
 
-        internal void DrawCall(Foreground graphic, Position position)
-        {
-            Point cameraLocation = ConsoleObject.Transform.Location - pivot;
-
-            Rectangle cameraView = new(cameraLocation, size);
-
-            Point graphicLocation = position.location - graphic.pivot;
-
-            Rectangle graphicRect = graphic.GetRect(graphicLocation, cameraView);
-
-            Point mapPoint = new();
-
-            Point mapLocation = graphicLocation.Sub(cameraLocation);
-
-            for (int y = graphicRect.Y; y < graphicRect.Height; ++y)
+            else if (graphic is Foreground foreground)
             {
-                mapPoint.Y = mapLocation.Y + y;
-
-                for (int x = graphicRect.X; x < graphicRect.Width && x < graphic.textMap[y].Count; ++x)
+                for (int y = graphicRect.Y; y < graphicRect.Height; ++y)
                 {
-                    mapPoint.X = mapLocation.X + x;
+                    mapPoint.Y = mapLocation.Y + y;
 
-                    if (foregroundDepthMap.Get(mapPoint) < position.depth)
+                    for (int x = graphicRect.X; x < graphicRect.Width && x < foreground.textMap[y].Count; ++x)
                     {
-                        continue;
+                        mapPoint.X = mapLocation.X + x;
+
+                        if (foregroundDepthMap.Get(mapPoint) < position.depth)
+                        {
+                            continue;
+                        }
+
+                        foregroundDepthMap.Set(mapPoint, position.depth);
+
+                        if (foreground.colorMap != null)
+                        {
+                            foregroundColorMap.Set(mapPoint, foreground.colorMap[y, x]);
+                        }
+
+                        foregroundTextMap.Set(mapPoint, foreground.textMap[y][x]);
                     }
-
-                    foregroundDepthMap.Set(mapPoint, position.depth);
-
-                    if (graphic.colorMap != null)
-                    {
-                        foregroundColorMap.Set(mapPoint, graphic.colorMap[y, x]);
-                    }
-
-                    foregroundTextMap.Set(mapPoint, graphic.textMap[y][x]);
                 }
             }
         }

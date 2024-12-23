@@ -2,7 +2,7 @@
 
 namespace ZL.CS
 {
-    public static class PointExtension
+    public static partial class PointExtension
     {
         public static Point Add(this Point instance, Point value)
         {

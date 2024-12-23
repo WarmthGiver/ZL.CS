@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace ZL.CS
 {
-    public static class StringExtension
+    public static partial class StringExtension
     {
         public static char[,] ToChar(this string[] instance)
         {
@@ -31,20 +31,6 @@ namespace ZL.CS
             }
 
             return charMap;
-        }
-
-        public static List<FixedChar>[] ToFixedChar(this string[] instance)
-        {
-            Size size = instance.GetMaxSize();
-
-            var fixedCharMap = new List<FixedChar>[size.Height];
-
-            for (int y = 0; y < size.Height; ++y)
-            {
-                fixedCharMap[y] = instance[y].ToFixedChar();
-            }
-
-            return fixedCharMap;
         }
 
         public static Size GetMaxSize(this string[] instance)

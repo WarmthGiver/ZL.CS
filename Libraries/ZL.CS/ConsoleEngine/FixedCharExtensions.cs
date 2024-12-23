@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace ZL.CS
+namespace ZL.CS.ConsoleEngine
 {
-    public static class FixedCharExtensions
+    public static partial class FixedCharExtensions
     {
         public static List<FixedChar> ToFixedChar(this string value)
         {

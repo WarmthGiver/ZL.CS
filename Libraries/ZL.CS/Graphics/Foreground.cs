@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+
 using ZL.CS.ConsoleEngine;
 
 namespace ZL.CS.Graphics
@@ -19,11 +20,6 @@ namespace ZL.CS.Graphics
         private Foreground(List<FixedChar>[] textMap) : base(textMap.GetMaxSize())
         {
             this.textMap = textMap;
-        }
-
-        public override void DrawCall(Position position)
-        {
-            Camera.Main?.DrawCall(this, position);
         }
     }
 }

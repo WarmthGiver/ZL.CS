@@ -1,6 +1,6 @@
 ﻿namespace ZL.CS.ConsoleEngine
 {
-    internal sealed class LifeCycle
+    public sealed class Collider : Component
     {
 
     }

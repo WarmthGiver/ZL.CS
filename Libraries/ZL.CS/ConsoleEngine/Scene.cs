@@ -2,7 +2,7 @@
 
 using System.Collections.Generic;
 
-using System.Drawing;
+using System.Threading;
 
 using System.Threading.Tasks;
 
@@ -12,9 +12,13 @@ namespace ZL.CS.ConsoleEngine
     {
         private static Scene? instance = null;
 
-        private int frameRate;
+        public static SceneState State { get; private set; } = SceneState.Ended;
 
-        public int FrameRate
+        private static ManualResetEventSlim pauseEvent = new(true);
+
+        private static int frameRate;
+
+        public static int FrameRate
         {
             get => frameRate;
 
@@ -22,13 +26,11 @@ namespace ZL.CS.ConsoleEngine
             {
                 frameRate = value;
 
-                threadDelay = TimeSpan.FromSeconds(1.0 / frameRate);
+                taskDelay = TimeSpan.FromSeconds(1.0 / frameRate);
             }
         }
 
-        private TimeSpan threadDelay;
-
-        protected readonly Size size;
+        private static TimeSpan taskDelay;
 
         private readonly List<ConsoleObject> consoleObjects = new();
 
@@ -46,80 +48,59 @@ namespace ZL.CS.ConsoleEngine
             return consoleObject;
         }
 
-        internal void Load()
+        public static async void Load<T>()
+
+            where T : Scene, new()
         {
-            instance?.End();
-
-            instance = this;
-
-            instance.Start();
-        }
-
-        internal override void Start()
-        {
-            FrameRate = 60;
-
-            foreach (var consoleObject in consoleObjects)
+            if (instance != null)
             {
-                if (consoleObject.IsEnabled == true)
-                {
-                    consoleObject.Start();
-                }
+                await instance.End();
             }
 
-            fixedUpdate = Task.Run(FixedUpdate);
+            instance = new T();
 
-            update = Task.Run(Update);
-
-            drawCall = Task.Run(DrawCall);
+            instance.Run();
         }
 
-        private void End()
+        internal static async void Terminate()
         {
-
-        }
-
-        private Task fixedUpdate;
-
-        internal override async void FixedUpdate()
-        {
-            while (true)
+            if (instance != null)
             {
-                foreach (var consoleObject in consoleObjects)
-                {
-                    if (consoleObject.IsEnabled == false)
-                    {
-                        continue;
-                    }
-
-                    consoleObject.FixedUpdate();
-                }
-
-                await Task.Delay(threadDelay);
+                await instance.End();
             }
+
+            State = SceneState.Terminated;
         }
 
-        private Task update;
-
-        internal override void Update()
+        private Task End()
         {
-            while (true)
-            {
-                foreach (var consoleObject in consoleObjects)
-                {
-                    if (consoleObject.IsEnabled == false)
-                    {
-                        continue;
-                    }
+            State = SceneState.Ended;
 
-                    consoleObject.Update();
-                }
-
-                LateUpdate();
-            }
+            return Task.WhenAll(callFixedUpdate, callUpdate, callDraw);
         }
 
-        internal override void LateUpdate()
+        private void Run()
+        {
+            State = SceneState.Running;
+
+            CallStart();
+        }
+
+        protected static void Pause()
+        {
+            State = SceneState.Paused;
+
+            pauseEvent.Reset();
+        }
+
+        protected void Resume()
+        {
+            State = SceneState.Running;
+
+            pauseEvent.Set();
+        }
+
+        internal override void CallStart()
         {
             foreach (var consoleObject in consoleObjects)
             {
@@ -128,16 +109,81 @@ namespace ZL.CS.ConsoleEngine
                     continue;
                 }
 
-                consoleObject.LateUpdate();
+                consoleObject.CallStart();
+            }
+
+            callFixedUpdate = Task.Run(CallFixedUpdate);
+
+            callUpdate = Task.Run(CallUpdate);
+
+            callDraw = Task.Run(CallDraw);
+        }
+
+        private static Task callFixedUpdate;
+
+        internal override async void CallFixedUpdate()
+        {
+            while (State != SceneState.Ended)
+            {
+                pauseEvent.Wait();
+
+                foreach (var consoleObject in consoleObjects)
+                {
+                    if (consoleObject.IsEnabled == false)
+                    {
+                        continue;
+                    }
+
+                    consoleObject.CallFixedUpdate();
+                }
+
+                await Task.Delay(taskDelay);
             }
         }
 
-        private Task drawCall;
+        private static Task callUpdate;
 
-        internal override async void DrawCall()
+        internal override void CallUpdate()
         {
-            while (true)
+            while (State != SceneState.Ended)
             {
+                pauseEvent.Wait();
+
+                foreach (var consoleObject in consoleObjects)
+                {
+                    if (consoleObject.IsEnabled == false)
+                    {
+                        continue;
+                    }
+
+                    consoleObject.CallUpdate();
+                }
+
+                CallLateUpdate();
+            }
+        }
+
+        internal override void CallLateUpdate()
+        {
+            foreach (var consoleObject in consoleObjects)
+            {
+                if (consoleObject.IsEnabled == false)
+                {
+                    continue;
+                }
+
+                consoleObject.CallLateUpdate();
+            }
+        }
+
+        private static Task callDraw;
+
+        internal override async void CallDraw()
+        {
+            while (State != SceneState.Ended)
+            {
+                pauseEvent.Wait();
+
                 Camera.Main?.Clear();
 
                 foreach (var consoleObject in consoleObjects)
@@ -147,12 +193,12 @@ namespace ZL.CS.ConsoleEngine
                         continue;
                     }
 
-                    consoleObject.DrawCall();
+                    consoleObject.CallDraw();
                 }
 
                 Camera.Main?.Render();
 
-                await Task.Delay(threadDelay);
+                await Task.Delay(taskDelay);
             }
         }
     }

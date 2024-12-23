@@ -67,6 +67,8 @@ namespace ZL.CS.ConsoleEngine
 
                 if (value != null)
                 {
+                    value.children.AddLast(this);
+
                     localPosition = position - value.position;
                 }
 
@@ -83,7 +85,7 @@ namespace ZL.CS.ConsoleEngine
 
         private readonly LinkedList<Transform> children = new();
 
-        public Transform(Position position, Transform? parent)
+        internal Transform(Position position, Transform? parent)
         {
             this.position = position;
 

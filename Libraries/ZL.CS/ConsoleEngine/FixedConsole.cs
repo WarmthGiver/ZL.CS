@@ -4,7 +4,7 @@ using System;
 
 using System.Drawing;
 
-namespace ZL.CS
+namespace ZL.CS.ConsoleEngine
 {
     public static class FixedConsole
     {

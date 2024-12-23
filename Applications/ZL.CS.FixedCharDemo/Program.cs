@@ -1,5 +1,7 @@
 ﻿using System;
 
+using ZL.CS;
+
 namespace ZL.CS.FixedCharDemo
 {
     internal class Program

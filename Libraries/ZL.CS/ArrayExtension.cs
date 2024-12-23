@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace ZL.CS
 {
-    public static class ArrayExtension
+    public static partial class ArrayExtension
     {
         public static T Get<T>(this T[,] instance, Point point)
         {

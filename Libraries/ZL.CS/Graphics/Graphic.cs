@@ -22,8 +22,6 @@ namespace ZL.CS.Graphics
             pivot = size.GetPivot();
         }
 
-        public abstract void DrawCall(Position position);
-
         public Rectangle GetRect(Point location, Rectangle view)
         {
             var rect = size.ToRect();

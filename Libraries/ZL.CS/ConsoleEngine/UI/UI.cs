@@ -8,9 +8,9 @@ namespace ZL.CS.ConsoleEngine.UI
     {
         public TGraphic? graphic = null;
 
-        internal override void DrawCall()
+        internal override void CallDraw()
         {
-            graphic?.DrawCall(ConsoleObject.Transform.Position);
+            Camera.Main?.Draw(graphic, ConsoleObject.Transform.Position);
         }
     }
 }

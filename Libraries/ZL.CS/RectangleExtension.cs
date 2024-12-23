@@ -2,7 +2,7 @@
 
 namespace ZL.CS
 {
-    public static class RectangleExtension
+    public static partial class RectangleExtension
     {
         public static Rectangle Scaling(this Rectangle instance, int x, int y)
         {
