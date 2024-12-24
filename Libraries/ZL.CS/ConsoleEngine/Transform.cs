@@ -4,7 +4,7 @@ using System.Drawing;
 
 namespace ZL.CS.ConsoleEngine
 {
-    public class Transform : Component
+    public class Transform
     {
         private Position position;
 

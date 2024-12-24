@@ -10,19 +10,19 @@ namespace ZL.CS.ApplicationDemo
     {
         public DemoScene()
         {
-            var mainCamera = CreateConsoleObject("Main Camera", new Position(0, 0, 0));
+            var playerObject = CreateConsoleObject("Player", new Position(0, 0, 0));
 
-            Camera.Main = mainCamera.AddComponent<Camera>();
+            playerObject.AddComponent<Player>();
 
-            var player = CreateConsoleObject("Player", new Position(0, 0, 0));
-
-            player.AddComponent<Player>();
-
-            var text = player.AddComponent<Text>();
+            var text = playerObject.AddComponent<Text>();
 
             text.graphic = new Foreground(new byte[,] { { 196 } }, "♥");
 
-            mainCamera.Transform.Parent = player.Transform;
+            var mainCameraObject = CreateConsoleObject("Main Camera", new Position(0, 0, 0));
+
+            Camera.Main = mainCameraObject.AddComponent<Camera>();
+
+            mainCameraObject.Transform.Parent = playerObject.Transform;
 
             var bg1 = CreateConsoleObject("BG1", new Position(0, 0, 1));
 

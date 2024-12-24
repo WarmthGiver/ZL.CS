@@ -121,7 +121,7 @@ namespace ZL.CS.ConsoleEngine
 
             where TGraphic : Graphic
         {
-            Point cameraLocation = ConsoleObject.Transform.Location - pivot;
+            Point cameraLocation = Container.Transform.Location - pivot;
 
             Rectangle cameraView = new(cameraLocation, size);
 

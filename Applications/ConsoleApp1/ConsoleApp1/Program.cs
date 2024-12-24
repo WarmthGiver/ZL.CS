@@ -4,38 +4,68 @@ namespace ConsoleApp1
 {
     internal class Program
     {
-        private AsyncKeyEventHandler inputManager = new();
+        private static KeyEventHandler keyEventHandler = new();
 
         private static void Main()
         {
+            keyEventHandler.AddEvent(ConsoleKey.W, () => Console.Write("W"));
 
+            while (true)
+            {
+                keyEventHandler.Check();
+
+                Thread.Sleep(100);
+            }
         }
     }
 
-    public sealed class AsyncKeyEventHandler
+    public sealed class KeyEventHandler
     {
-        private readonly Dictionary<ConsoleKey, Action?> events = new();
-
         [DllImport("user32.dll")]
 
         private static extern short GetAsyncKeyState(int key);
 
+        private readonly Dictionary<ConsoleKey, Action?> events = new();
+
         public void AddEvent(ConsoleKey key, Action action)
         {
+            if (events.ContainsKey(key) == false)
+            {
+                events.Add(key, null);
+            }
+
             events[key] += action;
         }
 
         public void RemoveEvent(ConsoleKey key, Action action)
         {
-            if (events.ContainsKey(key) == true)
+            if (events.ContainsKey(key) == false)
             {
-                events[key] -= action;
+                return;
+            }
+
+            events[key] -= action;
+
+            if (events[key] == null)
+            {
+                events.Remove(key);
             }
         }
 
         public void ClearEvents()
         {
             events.Clear();
+        }
+
+        public void Check()
+        {
+            foreach (ConsoleKey key in events.Keys)
+            {
+                if ((GetAsyncKeyState((int)key) & 0x8000) != 0)
+                {
+                    events[key]?.Invoke();
+                }
+            }
         }
     }
 }

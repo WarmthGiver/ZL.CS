@@ -8,19 +8,29 @@ namespace ZL.CS.ConsoleEngine
 {
     public static class FixedConsole
     {
+        public static void SetBufferSize(Size value)
+        {
+            SetBufferSize(value.Width, value.Height);
+        }
+
+        public static void SetBufferSize(int width, int height)
+        {
+            Console.SetBufferSize(width << 1, height);
+        }
+
         public static Size GetWindowSize()
         {
             return new(Console.WindowWidth >> 1, Console.WindowHeight);
         }
-
+        
         public static void SetWindowSize(Size value)
         {
-            Console.SetWindowSize(value.Width << 1, value.Height);
+            SetWindowSize(value.Width, value.Height);
         }
 
-        public static void SetWindowSize(int value)
+        public static void SetWindowSize(int width, int height)
         {
-            Console.SetWindowSize(value << 1, value);
+            Console.SetWindowSize(width << 1, height);
         }
 
         public static Point GetCursorPosition()

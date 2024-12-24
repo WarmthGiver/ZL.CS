@@ -2,15 +2,15 @@
 {
     public abstract class Component : BehaviourObject
     {
-        public ConsoleObject ConsoleObject { get; private set; }
+        public ConsoleObject Container { get; private set; }
 
-        internal static T Instantiate<T>(ConsoleObject consoleObject)
+        internal static T Instantiate<T>(ConsoleObject container)
             
             where T : Component, new()
         {
             T component = new()
             {
-                ConsoleObject = consoleObject
+                Container = container
             };
 
             return component;
@@ -20,7 +20,7 @@
 
             where T : Component
         {
-            return ConsoleObject.GetComponent<T>();
+            return Container.GetComponent<T>();
         }
 
         internal override void CallStart() => Start();

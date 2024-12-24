@@ -45,12 +45,14 @@ namespace ZL.CS.ApplicationDemo
             }));
 
             Console.CursorVisible = false;
-
-            FixedConsole.SetWindowSize(32);
         }
+
+        public DemoApplication() : base(32, 32) { }
 
         protected override void Start()
         {
+            Scene.FrameRate = 30;
+
             Scene.Load<DemoScene>();
         }
     }

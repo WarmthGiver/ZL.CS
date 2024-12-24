@@ -6,7 +6,7 @@ namespace ZL.CS.ConsoleEngine
     {
         public readonly string name;
 
-        public RectTransform? RectTransform { get; private set; }
+        //public RectTransform? RectTransform { get; private set; }
 
         public Transform Transform { get; private set; }
 
@@ -19,17 +19,17 @@ namespace ZL.CS.ConsoleEngine
             Transform = new(position, parent);
         }
 
-        internal RectTransform AddRectTransform()
+        /*internal RectTransform AddRectTransform()
         {
             if (RectTransform == null)
             {
-                RectTransform = new RectTransform(Transform);
+                RectTransform = new(Transform);
 
                 Transform = RectTransform;
             }
 
             return RectTransform;
-        }
+        }*/
 
         public T AddComponent<T>()
 

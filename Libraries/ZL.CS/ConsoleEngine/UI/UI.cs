@@ -10,7 +10,7 @@ namespace ZL.CS.ConsoleEngine.UI
 
         internal override void CallDraw()
         {
-            Camera.Main?.Draw(graphic, ConsoleObject.Transform.Position);
+            Camera.Main?.Draw(graphic, Container.Transform.Position);
         }
     }
 }

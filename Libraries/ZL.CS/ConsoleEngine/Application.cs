@@ -1,10 +1,68 @@
-﻿namespace ZL.CS.ConsoleEngine
+﻿using System;
+
+using System.Runtime.InteropServices;
+
+namespace ZL.CS.ConsoleEngine
 {
     public abstract class Application
     {
+        [DllImport("kernel32.dll", ExactSpelling = true)]
+
+        private static extern IntPtr GetConsoleWindow();
+
+        [DllImport("user32.dll", SetLastError = true)]
+
+        private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
+
+        [DllImport("user32.dll", SetLastError = true)]
+
+        private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
+
+        [DllImport("user32.dll")]
+
+        private static extern IntPtr GetSystemMenu(IntPtr hWnd, bool bRevert);
+
+        [DllImport("user32.dll")]
+
+        private static extern bool DeleteMenu(IntPtr hMenu, uint uPosition, uint uFlags);
+
+        private const int GWL_STYLE = -16;
+
+        private const int WS_SIZEBOX = 0x00040000; // 창 크기 조정 스타일
+
+        private const int WS_MAXIMIZEBOX = 0x00010000; // 최대화 버튼 스타일
+
+        private const uint SC_MAXIMIZE = 0xF030; // 최대화 명령
+
+        private const uint MF_BYCOMMAND = 0x0000; // 명령 단위로 처리
+
+
+        private int width;
+
+        private int height;
+
+        protected Application(int width, int height)
+        {
+            this.width = width;
+
+            this.height = height;
+        }
+
         public void Run()
         {
-            //state = State.Running;
+            FixedConsole.SetWindowSize(width, height);
+
+            FixedConsole.SetBufferSize(width, height);
+
+            IntPtr consoleWindow = GetConsoleWindow();
+
+            int style = GetWindowLong(consoleWindow, GWL_STYLE);
+
+            style &= ~WS_MAXIMIZEBOX; // 최대화 버튼 제거
+
+            style &= ~WS_SIZEBOX; // 크기 조정 제거
+
+            SetWindowLong(consoleWindow, GWL_STYLE, style);
 
             Start();
 
@@ -15,7 +73,10 @@
 
         private void LifeSupport()
         {
-            while (Scene.State != SceneState.Terminated) ;
+            while (Scene.State != SceneState.Terminated)
+            {
+
+            }
         }
     }
 }

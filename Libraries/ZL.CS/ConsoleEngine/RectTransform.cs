@@ -2,7 +2,7 @@
 
 namespace ZL.CS.ConsoleEngine
 {
-    public sealed class RectTransform : Transform
+    /*public sealed class RectTransform : Transform
     {
         private Rectangle rect;
 
@@ -16,7 +16,7 @@ namespace ZL.CS.ConsoleEngine
             {
                 Pivot = value.GetPivot();
 
-                rect.Location = ConsoleObject.Transform.Location - Pivot;
+                rect.Location = Container.Transform.Location - Pivot;
 
                 rect.Size = value;
             }
@@ -39,5 +39,5 @@ namespace ZL.CS.ConsoleEngine
 
             base.Move(direction);
         }
-    }
+    }*/
 }
