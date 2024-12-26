@@ -1,5 +1,7 @@
 ﻿using System;
 
+using System.Numerics;
+
 using ZL.CS.ConsoleEngine;
 
 namespace ZL.CS.ApplicationDemo
@@ -10,22 +12,30 @@ namespace ZL.CS.ApplicationDemo
 
         private KeyEventHandler keyEventHandler = new();
 
+        private Vector3 position;
+
+        private float speed = 3f;
+
         protected override void Start()
         {
             transform = Container.Transform;
 
-            keyEventHandler.Add(ConsoleKey.W, () => transform.Move(new Position(0, -1, 0)));
+            keyEventHandler.Add(ConsoleKey.W, () => position.Y -= speed * (float)Scene.DeltaTime);
 
-            keyEventHandler.Add(ConsoleKey.S, () => transform.Move(new Position(0, 1, 0)));
+            keyEventHandler.Add(ConsoleKey.S, () => position.Y += speed * (float)Scene.DeltaTime);
 
-            keyEventHandler.Add(ConsoleKey.A, () => transform.Move(new Position(-1, 0, 0)));
+            keyEventHandler.Add(ConsoleKey.A, () => position.X -= speed * (float)Scene.DeltaTime);
 
-            keyEventHandler.Add(ConsoleKey.D, () => transform.Move(new Position(1, 0, 0)));
+            keyEventHandler.Add(ConsoleKey.D, () => position.X += speed * (float)Scene.DeltaTime);
         }
 
-        protected override void FixedUpdate()
+        protected override void Update()
         {
+            position = transform.Position;
+
             keyEventHandler.Check();
+
+            transform.Position = position;
         }
     }
 }

@@ -32,11 +32,6 @@ namespace ZL.CS.ConsoleEngine
 
         private const int WS_MAXIMIZEBOX = 0x00010000; // 최대화 버튼 스타일
 
-        private const uint SC_MAXIMIZE = 0xF030; // 최대화 명령
-
-        private const uint MF_BYCOMMAND = 0x0000; // 명령 단위로 처리
-
-
         private int width;
 
         private int height;
@@ -58,9 +53,9 @@ namespace ZL.CS.ConsoleEngine
 
             int style = GetWindowLong(consoleWindow, GWL_STYLE);
 
-            style &= ~WS_MAXIMIZEBOX; // 최대화 버튼 제거
+            style &= ~WS_MAXIMIZEBOX;
 
-            style &= ~WS_SIZEBOX; // 크기 조정 제거
+            style &= ~WS_SIZEBOX;
 
             SetWindowLong(consoleWindow, GWL_STYLE, style);
 

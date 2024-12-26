@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 
+using System.Numerics;
+
 namespace ZL.CS.ConsoleEngine
 {
     public sealed class ConsoleObject : BehaviourObject
@@ -12,7 +14,7 @@ namespace ZL.CS.ConsoleEngine
 
         private readonly List<Component> components = new();
 
-        public ConsoleObject(string name, Position position, Transform? parent)
+        public ConsoleObject(string name, Vector3 position, Transform? parent)
         {
             this.name = name;
 

@@ -4,17 +4,19 @@ namespace ConsoleApp1
 {
     internal class Program
     {
-        private static KeyEventHandler keyEventHandler = new();
+        private static readonly KeyEventHandler keyEventHandler = new();
 
         private static void Main()
         {
-            keyEventHandler.AddEvent(ConsoleKey.W, () => Console.Write("W"));
+            var spf = TimeSpan.FromSeconds(1.0 / 60);
+
+            keyEventHandler.Add(ConsoleKey.W, () => Console.Write("W"));
 
             while (true)
             {
                 keyEventHandler.Check();
 
-                Thread.Sleep(100);
+                Thread.Sleep(spf);
             }
         }
     }
@@ -25,47 +27,64 @@ namespace ConsoleApp1
 
         private static extern short GetAsyncKeyState(int key);
 
-        private readonly Dictionary<ConsoleKey, Action?> events = new();
+        private readonly Dictionary<ConsoleKey, Action?> actions = new();
 
-        public void AddEvent(ConsoleKey key, Action action)
+        public void Add(ConsoleKey key, Action action)
         {
-            if (events.ContainsKey(key) == false)
+            if (actions.ContainsKey(key) == false)
             {
-                events.Add(key, null);
+                actions.Add(key, null);
             }
 
-            events[key] += action;
+            actions[key] += action;
         }
 
-        public void RemoveEvent(ConsoleKey key, Action action)
+        public void Remove(ConsoleKey key, Action action)
         {
-            if (events.ContainsKey(key) == false)
+            if (actions.ContainsKey(key) == false)
             {
                 return;
             }
 
-            events[key] -= action;
+            actions[key] -= action;
 
-            if (events[key] == null)
+            if (actions[key] == null)
             {
-                events.Remove(key);
+                actions.Remove(key);
             }
         }
 
-        public void ClearEvents()
+        public void Clear()
         {
-            events.Clear();
+            actions.Clear();
         }
 
         public void Check()
         {
-            foreach (ConsoleKey key in events.Keys)
+            foreach (var key in actions.Keys)
             {
-                if ((GetAsyncKeyState((int)key) & 0x8000) != 0)
+                if (key.IsPressed() == true)
                 {
-                    events[key]?.Invoke();
+                    actions[key]?.Invoke();
                 }
             }
+        }
+    }
+
+    public static class Input
+    {
+        [DllImport("user32.dll")]
+
+        private static extern short GetAsyncKeyState(int key);
+
+        public static bool IsPressed(this ConsoleKey key)
+        {
+            return (GetAsyncKeyState((int)key) & 0x8000) != 0;
+        }
+
+        public static bool GetKeyUp(ConsoleKey key)
+        {
+            return (GetAsyncKeyState((int)key) & 0x0001) != 0;
         }
     }
 }

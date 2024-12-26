@@ -1,4 +1,6 @@
-﻿using ZL.CS.ConsoleEngine;
+﻿using System.Numerics;
+
+using ZL.CS.ConsoleEngine;
 
 using ZL.CS.ConsoleEngine.UI;
 
@@ -8,29 +10,29 @@ namespace ZL.CS.ApplicationDemo
 {
     internal sealed class DemoScene : Scene
     {
-        public DemoScene()
+        public DemoScene() : base()
         {
-            var playerObject = CreateConsoleObject("Player", new Position(0, 0, 0));
+            var playerObject = CreateConsoleObject("Player", new Vector3(0, 0, 0));
 
             playerObject.AddComponent<Player>();
 
             var text = playerObject.AddComponent<Text>();
 
-            text.graphic = new Foreground(new byte[,] { { 196 } }, "♥");
+            text.graphic = new Foreground(new byte[,] { { 196 } }, "♥1234");
 
-            var mainCameraObject = CreateConsoleObject("Main Camera", new Position(0, 0, 0));
+            var mainCameraObject = CreateConsoleObject("Main Camera", new Vector3(0, 0, 0));
 
             Camera.Main = mainCameraObject.AddComponent<Camera>();
 
             mainCameraObject.Transform.Parent = playerObject.Transform;
 
-            var bg1 = CreateConsoleObject("BG1", new Position(0, 0, 1));
+            var bg1 = CreateConsoleObject("BG1", new Vector3(0, 0, 1));
 
             var bg1Image = bg1.AddComponent<Image>();
 
             bg1Image.graphic = ResourceManager.LoadBackground("BG1");
 
-            var bg2 = CreateConsoleObject("BG2", new Position(1, 1, 2));
+            var bg2 = CreateConsoleObject("BG2", new Vector3(1, 1, 2));
 
             var bg2Image = bg2.AddComponent<Image>();
 

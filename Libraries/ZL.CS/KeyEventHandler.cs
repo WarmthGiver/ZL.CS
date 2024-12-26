@@ -57,6 +57,10 @@ namespace ZL.CS
 
     public sealed class KeyEventHandler
     {
+        [DllImport("user32.dll")]
+
+        private static extern short GetAsyncKeyState(int key);
+
         private readonly Dictionary<ConsoleKey, Action?> actions = new();
 
         public void Add(ConsoleKey key, Action action)
@@ -69,9 +73,16 @@ namespace ZL.CS
             actions[key] += action;
         }
 
-        public void Remove(ConsoleKey key, ActionTrigger action)
+        public void Remove(ConsoleKey key, Action action)
         {
-            if (actions.ContainsKey(key) == true)
+            if (actions.ContainsKey(key) == false)
+            {
+                return;
+            }
+
+            actions[key] -= action;
+
+            if (actions[key] == null)
             {
                 actions.Remove(key);
             }
@@ -86,14 +97,9 @@ namespace ZL.CS
         {
             foreach (var key in actions.Keys)
             {
-                if (Input.GetKeyDown(key) == true)
+                if (key.IsPressed() == true)
                 {
-                    actions[key].Fire();
-                }
-
-                if (Input.GetKeyUp(key) == true)
-                {
-                    actions[key].Reload();
+                    actions[key]?.Invoke();
                 }
             }
         }
@@ -105,7 +111,7 @@ namespace ZL.CS
 
         private static extern short GetAsyncKeyState(int key);
 
-        public static bool GetKeyDown(ConsoleKey key)
+        public static bool IsPressed(this ConsoleKey key)
         {
             return (GetAsyncKeyState((int)key) & 0x8000) != 0;
         }

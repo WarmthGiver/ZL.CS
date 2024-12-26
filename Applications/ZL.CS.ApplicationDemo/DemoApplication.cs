@@ -47,13 +47,13 @@ namespace ZL.CS.ApplicationDemo
             Console.CursorVisible = false;
         }
 
-        public DemoApplication() : base(32, 32) { }
+        public DemoApplication() : base(64, 32) { }
 
         protected override void Start()
         {
-            Scene.FrameRate = 30;
-
             Scene.Load<DemoScene>();
+
+            Scene.FPS = 60;
         }
     }
 }

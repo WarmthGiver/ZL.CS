@@ -2,6 +2,8 @@
 
 using System.Drawing;
 
+using System.Numerics;
+
 using ZL.CS.Graphics;
 
 namespace ZL.CS.ConsoleEngine
@@ -36,9 +38,9 @@ namespace ZL.CS.ConsoleEngine
 
         private static Size pivot;
 
-        private static int[,] backgroundDepthMap;
+        private static float[,] backgroundDepthMap;
 
-        private static int[,] foregroundDepthMap;
+        private static float[,] foregroundDepthMap;
 
         private static byte[,] backgroundColorMap;
 
@@ -48,15 +50,15 @@ namespace ZL.CS.ConsoleEngine
 
         private static readonly ANSI.BufferBuilder bufferBuilder = new();
 
-        internal override void CallStart()
+        protected override void Start()
         {
             size = FixedConsole.GetWindowSize();
 
             pivot = size.GetPivot();
 
-            backgroundDepthMap = new int[size.Height, size.Width];
+            backgroundDepthMap = new float[size.Height, size.Width];
 
-            foregroundDepthMap = new int[size.Height, size.Width];
+            foregroundDepthMap = new float[size.Height, size.Width];
 
             backgroundColorMap = new byte[size.Height, size.Width];
 
@@ -117,15 +119,15 @@ namespace ZL.CS.ConsoleEngine
 
         }
 
-        internal void Draw<TGraphic>(TGraphic? graphic, Position position)
+        internal void Draw<TGraphic>(TGraphic graphic, Vector3 position)
 
             where TGraphic : Graphic
         {
-            Point cameraLocation = Container.Transform.Location - pivot;
+            Point cameraLocation = Container.Transform.Position.ToPoint() - pivot;
 
             Rectangle cameraView = new(cameraLocation, size);
 
-            Point graphicLocation = position.location - graphic.pivot;
+            Point graphicLocation = position.ToPoint() - graphic.pivot;
 
             Rectangle graphicRect = graphic.GetRect(graphicLocation, cameraView);
 
@@ -143,7 +145,7 @@ namespace ZL.CS.ConsoleEngine
                     {
                         mapPoint.X = mapLocation.X + x;
 
-                        if (position.depth > backgroundDepthMap.Get(mapPoint))
+                        if (position.Z > backgroundDepthMap.Get(mapPoint))
                         {
                             continue;
                         }
@@ -153,11 +155,11 @@ namespace ZL.CS.ConsoleEngine
                             continue;
                         }
 
-                        backgroundDepthMap.Set(mapPoint, position.depth);
+                        backgroundDepthMap.Set(mapPoint, position.Z);
 
                         backgroundColorMap.Set(mapPoint, background.colorMap[y, x]);
 
-                        if (position.depth > foregroundDepthMap.Get(mapPoint))
+                        if (position.Z > foregroundDepthMap.Get(mapPoint))
                         {
                             continue;
                         }
@@ -177,12 +179,12 @@ namespace ZL.CS.ConsoleEngine
                     {
                         mapPoint.X = mapLocation.X + x;
 
-                        if (foregroundDepthMap.Get(mapPoint) < position.depth)
+                        if (foregroundDepthMap.Get(mapPoint) < position.Z)
                         {
                             continue;
                         }
 
-                        foregroundDepthMap.Set(mapPoint, position.depth);
+                        foregroundDepthMap.Set(mapPoint, position.Z);
 
                         if (foreground.colorMap != null)
                         {

@@ -2,6 +2,10 @@
 
 using System.Collections.Generic;
 
+using System.Diagnostics;
+
+using System.Numerics;
+
 using System.Threading;
 
 using System.Threading.Tasks;
@@ -12,40 +16,68 @@ namespace ZL.CS.ConsoleEngine
     {
         private static Scene? instance = null;
 
-        public static SceneState State { get; private set; } = SceneState.Ended;
+        public static SceneState State { get; private set; } = SceneState.Terminated;
 
-        private static ManualResetEventSlim pauseEvent = new(true);
+        private static readonly ManualResetEventSlim pauseEvent = new(true);
 
-        private static int frameRate;
+        private static int fps;
 
-        public static int FrameRate
+        public static int FPS
         {
-            get => frameRate;
+            get => fps;
 
             set
             {
-                frameRate = value;
+                fps = value;
 
-                taskDelay = TimeSpan.FromSeconds(1.0 / frameRate);
+                spf = 1.0 / fps;
             }
         }
 
-        private static TimeSpan taskDelay;
+        private static double spf;
 
-        private readonly List<ConsoleObject> consoleObjects = new();
+        public static double DeltaTime { get; private set; }
+
+        private static double fixedDeltaTime;
+
+        public static double FixedDeltaTime
+        {
+            get => fixedDeltaTime;
+
+            set
+            {
+                fixedDeltaTime = value;
+
+                fixedDelayTime = TimeSpan.FromSeconds(value);
+            }
+        }
+
+        private static TimeSpan fixedDelayTime;
+
+        private readonly LinkedList<ConsoleObject> consoleObjects = new();
 
         protected ConsoleObject CreateConsoleObject(string name, Transform? parent = null)
         {
             return CreateConsoleObject(name, new(), parent);
         }
 
-        protected ConsoleObject CreateConsoleObject(string name, Position position, Transform? parent = null)
+        protected ConsoleObject CreateConsoleObject(string name, Vector3 position, Transform? parent = null)
         {
             ConsoleObject consoleObject = new(name, position, parent);
 
-            consoleObjects.Add(consoleObject);
+            consoleObjects.AddLast(consoleObject);
 
             return consoleObject;
+        }
+
+        internal static async void Terminate()
+        {
+            if (instance != null)
+            {
+                await Unload();
+            }
+
+            State = SceneState.Terminated;
         }
 
         public static async void Load<T>()
@@ -54,29 +86,21 @@ namespace ZL.CS.ConsoleEngine
         {
             if (instance != null)
             {
-                await instance.End();
+                await Unload();
             }
+
+            State = SceneState.Loading;
 
             instance = new T();
 
             instance.Run();
         }
 
-        internal static async void Terminate()
+        private static Task Unload()
         {
-            if (instance != null)
-            {
-                await instance.End();
-            }
+            State = SceneState.Unloading;
 
-            State = SceneState.Terminated;
-        }
-
-        private Task End()
-        {
-            State = SceneState.Ended;
-
-            return Task.WhenAll(callFixedUpdate, callUpdate, callDraw);
+            return Task.WhenAll(callFixedUpdate, callUpdate);
         }
 
         private void Run()
@@ -123,7 +147,7 @@ namespace ZL.CS.ConsoleEngine
 
         internal override async void CallFixedUpdate()
         {
-            while (State != SceneState.Ended)
+            while (State != SceneState.Unloading)
             {
                 pauseEvent.Wait();
 
@@ -137,17 +161,21 @@ namespace ZL.CS.ConsoleEngine
                     consoleObject.CallFixedUpdate();
                 }
 
-                await Task.Delay(taskDelay);
+                await Task.Delay(fixedDelayTime);
             }
         }
 
         private static Task callUpdate;
 
-        internal override void CallUpdate()
+        internal override async void CallUpdate()
         {
-            while (State != SceneState.Ended)
+            Stopwatch stopwatch = new();
+
+            while (State != SceneState.Unloading)
             {
                 pauseEvent.Wait();
+
+                stopwatch.Restart();
 
                 foreach (var consoleObject in consoleObjects)
                 {
@@ -160,6 +188,17 @@ namespace ZL.CS.ConsoleEngine
                 }
 
                 CallLateUpdate();
+
+                stopwatch.Stop();
+
+                DeltaTime = stopwatch.Elapsed.TotalSeconds;
+
+                if (DeltaTime < spf)
+                {
+                    DeltaTime = spf - DeltaTime;
+
+                    await Task.Delay(TimeSpan.FromSeconds(DeltaTime));
+                }
             }
         }
 
@@ -180,10 +219,8 @@ namespace ZL.CS.ConsoleEngine
 
         internal override async void CallDraw()
         {
-            while (State != SceneState.Ended)
+            while (State != SceneState.Unloading)
             {
-                pauseEvent.Wait();
-
                 Camera.Main?.Clear();
 
                 foreach (var consoleObject in consoleObjects)
@@ -198,8 +235,21 @@ namespace ZL.CS.ConsoleEngine
 
                 Camera.Main?.Render();
 
-                await Task.Delay(taskDelay);
+                await Task.Delay(TimeSpan.FromSeconds(spf));
             }
         }
+    }
+
+    public enum SceneState
+    {
+        Terminated,
+
+        Loading,
+
+        Unloading,
+
+        Running,
+
+        Paused,
     }
 }

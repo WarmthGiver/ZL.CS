@@ -1,55 +1,27 @@
 ﻿using System.Collections.Generic;
 
-using System.Drawing;
+using System.Numerics;
 
 namespace ZL.CS.ConsoleEngine
 {
     public class Transform
     {
-        private Position position;
+        private Vector3 position;
 
-        public Position Position
+        public Vector3 Position
         {
             get => position;
 
             set => Move(value - position);
         }
 
-        private Position localPosition;
+        private Vector3 localPosition;
 
-        public Position LocalPosition
+        public Vector3 LocalPosition
         {
             get => localPosition;
 
             set => Move(value - localPosition);
-        }
-
-        public Point Location
-        {
-            get => position.location;
-
-            set => Move(value.Direction(position.location));
-        }
-
-        public Point LocalLocation
-        {
-            get => localPosition.location;
-
-            set => Move(value.Direction(localPosition.location));
-        }
-
-        public int Depth
-        {
-            get => position.depth;
-
-            set => Move(value - position.depth);
-        }
-
-        public int LocalDepth
-        {
-            get => localPosition.depth;
-
-            set => Move(value - localPosition.depth);
         }
 
         private Transform? parent = null;
@@ -85,14 +57,14 @@ namespace ZL.CS.ConsoleEngine
 
         private readonly LinkedList<Transform> children = new();
 
-        internal Transform(Position position, Transform? parent)
+        internal Transform(Vector3 position, Transform? parent)
         {
             this.position = position;
 
             Parent = parent;
         }
 
-        public virtual void Move(Position position)
+        public virtual void Move(Vector3 position)
         {
             this.position += position;
 
@@ -101,30 +73,6 @@ namespace ZL.CS.ConsoleEngine
             foreach (var child in children)
             {
                 child.Move(position);
-            }
-        }
-
-        public virtual void Move(Size direction)
-        {
-            position.location += direction;
-
-            localPosition.location += direction;
-
-            foreach (var child in children)
-            {
-                child.Move(direction);
-            }
-        }
-
-        public void Move(int depth)
-        {
-            position.depth += depth;
-
-            localPosition.depth += depth;
-
-            foreach (var child in children)
-            {
-                child.Move(depth);
             }
         }
     }
