@@ -30,7 +30,7 @@ namespace ZL.CS
 
     public sealed class ActionTrigger : Trigger
     {
-        public Action? onFire = null;
+        public event Action? onFire = null;
 
         public static ActionTrigger operator +(ActionTrigger left, Action rigth)
         {
@@ -45,7 +45,6 @@ namespace ZL.CS
 
             return left;
         }
-
 
         public override bool Fire()
         {
@@ -93,7 +92,7 @@ namespace ZL.CS
             actions.Clear();
         }
 
-        public void Check()
+        public void Invoke()
         {
             foreach (var key in actions.Keys)
             {
@@ -116,7 +115,7 @@ namespace ZL.CS
             return (GetAsyncKeyState((int)key) & 0x8000) != 0;
         }
 
-        public static bool GetKeyUp(ConsoleKey key)
+        public static bool IsUp(this ConsoleKey key)
         {
             return (GetAsyncKeyState((int)key) & 0x0001) != 0;
         }

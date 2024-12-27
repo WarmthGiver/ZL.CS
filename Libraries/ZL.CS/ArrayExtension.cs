@@ -71,5 +71,17 @@ namespace ZL.CS
                 }
             }
         }
+
+        public static T[,] ToMap<T>(this T[] instance)
+        {
+            var map = new T[1, instance.Length];
+
+            for (int x = 0; x < instance.Length; ++x)
+            {
+                map[0, x] = instance[x];
+            }
+
+            return map;
+        }
     }
 }

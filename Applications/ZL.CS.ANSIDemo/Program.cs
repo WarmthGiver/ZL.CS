@@ -1,8 +1,6 @@
 ﻿using System;
 
-using ZL.CS.Graphics;
-
-namespace ZL.CS.ANSIDemo
+namespace ZL.CS.API.ANSIDemo
 {
     internal class Program
     {

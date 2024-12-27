@@ -1,12 +1,8 @@
 ﻿using System;
 
-using ZL.CS.ConsoleEngine;
-
-using ZL.CS.Graphics;
-
-namespace ZL.CS.ApplicationDemo
+namespace ZL.CS.API.ApplicationDemo
 {
-    internal sealed class DemoApplication : Application
+    internal sealed class DemoApplication : App
     {
         static DemoApplication()
         {
@@ -47,13 +43,11 @@ namespace ZL.CS.ApplicationDemo
             Console.CursorVisible = false;
         }
 
-        public DemoApplication() : base(64, 32) { }
-
         protected override void Start()
         {
-            Scene.Load<DemoScene>();
+            Scene.Load<DemoScene1>();
 
-            Scene.FPS = 60;
+            TargetFrameRate = 60;
         }
     }
 }
