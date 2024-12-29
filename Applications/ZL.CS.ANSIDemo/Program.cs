@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ZL.CS.API.ANSIDemo
+namespace ZL.CS.ANSIDemo
 {
     internal class Program
     {
@@ -8,27 +8,27 @@ namespace ZL.CS.API.ANSIDemo
         {
             ANSI.ShowColorPalette();
 
-            ANSI.BufferBuilder builder = new();
+            ANSI.Builder ansiBuilder = new();
 
-            builder.SetColor(196, 046);
+            ansiBuilder.SetColor(196, 046);
 
-            builder.Append($" {builder.BackgroundColor.ToString("000")},{builder.ForegroundColor.ToString("000")} ");
+            ansiBuilder.Append($" {ansiBuilder.BackgroundColor.ToString("000")},{ansiBuilder.ForegroundColor.ToString("000")} ");
 
-            builder.AppendLine();
+            ansiBuilder.AppendLine();
 
-            builder.SetColor(046, 021);
+            ansiBuilder.SetColor(046, 021);
 
-            builder.Append($" {builder.BackgroundColor.ToString("000")},{builder.ForegroundColor.ToString("000")} ");
+            ansiBuilder.Append($" {ansiBuilder.BackgroundColor.ToString("000")},{ansiBuilder.ForegroundColor.ToString("000")} ");
 
-            builder.AppendLine();
+            ansiBuilder.AppendLine();
 
-            builder.SetColor(021, 196);
+            ansiBuilder.SetColor(021, 196);
 
-            builder.Append($" {builder.BackgroundColor.ToString("000")},{builder.ForegroundColor.ToString("000")} ");
+            ansiBuilder.Append($" {ansiBuilder.BackgroundColor.ToString("000")},{ansiBuilder.ForegroundColor.ToString("000")} ");
 
-            builder.AppendReset();
+            ansiBuilder.AppendReset();
 
-            Console.WriteLine(builder.ToString());
+            Console.WriteLine(ansiBuilder.ToString());
         }
     }
 }
