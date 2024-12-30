@@ -2,6 +2,7 @@
 
 namespace ZL.CS.FW.Demo
 {
+    // Scene 클래스를 상속받기 하면 생명주기가 작동함.
     internal sealed class DemoScene1 : Scene
     {
         public DemoScene1() : base(32, 32)
